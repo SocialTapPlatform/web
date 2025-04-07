@@ -1,0 +1,22 @@
+# Blacklist of inappropriate words
+# One word per line
+hell
+damn
+crap
+idiot
+stupid
+dumb
+jerk
+racist
+hate
+bigot
+moron
+dummy
+slur
+attack
+misogyny
+obscene
+offensive
+derogatory
+profanity
+toxic
