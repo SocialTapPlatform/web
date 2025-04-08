@@ -323,7 +323,7 @@ def profile():
     
     delete_form = DeleteAccountForm()
     
-    return render_template(profile.html', user=current_user, delete_form=delete_form)
+    return render_template('profile.html', user=current_user, delete_form=delete_form)
     
 @app.route('/confirm-google-delete')
 @login_required
