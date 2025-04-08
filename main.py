@@ -316,7 +316,6 @@ def set_user_offline():
     return '', 204  # Return empty response with HTTP 204 (No Content)
 
 @app.route('/profile', methods=['GET'])
-@login_required
 def profile():
     # Update last seen timestamp
     current_user.last_seen = datetime.utcnow()
@@ -324,7 +323,7 @@ def profile():
     
     delete_form = DeleteAccountForm()
     
-    return render_template(app/profile.html', user=current_user, delete_form=delete_form)
+    return render_template(profile.html', user=current_user, delete_form=delete_form)
     
 @app.route('/confirm-google-delete')
 @login_required
