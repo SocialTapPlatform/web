@@ -84,9 +84,9 @@
                                             {{ delete_form.hidden_tag() }}
                                             
                                             <div class="mb-3">
-                                                {{ delete_form.password.label(class="form-label") }}
-                                                {{ delete_form.password(class="form-control") }}
-                                                {% for error in delete_form.password.errors %}
+                                                {{ delete_form.confirm_delete.label(class="form-label") }}
+                                                {{ delete_form.confirm_delete(class="form-control") }}
+                                                {% for error in delete_form.confirm_delete.errors %}
                                                     <div class="text-danger">{{ error }}</div>
                                                 {% endfor %}
                                             </div>
