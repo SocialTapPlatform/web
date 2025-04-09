@@ -1,3 +1,0 @@
-# List of admin email addresses (one per line)
-admin@example.com
-brokenlatchhook@outlook.com
