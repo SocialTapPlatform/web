@@ -449,6 +449,10 @@ def delete_account():
 def privacy_policy():
     return render_template('privacy_policy.html')
 
+@app.route('/google924ae39ef02b1cc5.html')
+def google924ae39ef02b1cc5():
+    return render_template('google924ae39ef02b1cc5.html')
+    
 @app.route('/terms-of-service')
 def terms_of_service():
     return render_template('terms_of_service.html')
