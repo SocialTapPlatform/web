@@ -451,7 +451,7 @@ def privacy_policy():
 
 @app.route('/google924ae39ef02b1cc5.html')
 def google924ae39ef02b1cc5():
-    return render_template('google924ae39ef02b1cc5.html')
+    return render_template('/google924ae39ef02b1cc5.html')
     
 @app.route('/terms-of-service')
 def terms_of_service():
