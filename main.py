@@ -593,5 +593,22 @@ def admin_delete_account(user_id):
     
     return redirect(url_for('admin_users'))
 
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin():
+        abort(403)
+
+    user = User.query.get_or_404(user_id)
+
+    if user.is_admin() or user.id == current_user.id:
+        flash('Cannot delete this user.', 'danger')
+        return redirect(url_for('admin_panel'))
+
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'User {user.username} has been deleted.', 'success')
+    return redirect(url_for('admin_panel'))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
