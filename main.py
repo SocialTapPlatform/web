@@ -605,10 +605,12 @@ def delete_user(user_id):
         flash('Cannot delete this user.', 'danger')
         return redirect(url_for('admin_panel'))
 
+    # Delete user's messages first
+    Message.query.filter_by(user_id=user.id).delete()
+
     db.session.delete(user)
     db.session.commit()
-    flash(f'User {user.username} has been deleted.', 'success')
+    flash(f'User {user.username} and their messages have been deleted.', 'success')
     return redirect(url_for('admin_panel'))
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
