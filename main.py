@@ -603,7 +603,7 @@ def delete_user(user_id):
 
     if user.is_admin() or user.id == current_user.id:
         flash('Cannot delete this user.', 'danger')
-        return redirect(url_for('admin_panel'))
+        return redirect(url_for('admin_users'))
 
     # Delete user's messages first
     Message.query.filter_by(user_id=user.id).delete()
