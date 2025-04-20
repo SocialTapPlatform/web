@@ -23,6 +23,11 @@ def block_bad_paths():
         time.sleep(5)
         return '', 204
 
+#Letting cats handle all of the error messages
+@app.errorhandler(Exception)
+def handle_exception(e):
+    code = getattr(e, 'code', 500)
+    return redirect(f"https://http.cat/{code}")
 
 # Load blacklist words
 BLACKLIST_WORDS = set()
