@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import logging
 import os
 import re
+import time
 logging.basicConfig(level=logging.DEBUG)
 
 #These WP bots thinking I'm using WP are getting pretty annoying
@@ -19,7 +20,8 @@ logging.basicConfig(level=logging.DEBUG)
 def block_bad_paths():
     if request.path.startswith('/wp-admin/'):
         print(f"[INFO] Bot attempt blocked from IP: {request.remote_addr}, User-Agent: {request.user_agent.string}")
-        return redirect("https://http.cat/102.jpg")
+        time.sleep(5)
+        return '', 204
 
 
 # Load blacklist words
