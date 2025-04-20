@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
+from flask import Flask, request, abort
 from app import app, db
 from models import User, Message, ChatRoom, cipher_suite
 import uuid
@@ -12,6 +13,14 @@ import os
 import re
 
 logging.basicConfig(level=logging.DEBUG)
+
+#These WP bots thinking I'm using WP are getting pretty annoying
+@app.before_request
+def block_bad_paths():
+    if request.path.startswith('/wp-admin/'):
+        print(f"[INFO] Bot attempt blocked from IP: {request.remote_addr}, User-Agent: {request.user_agent.string}")
+        abort(404)
+
 
 # Load blacklist words
 BLACKLIST_WORDS = set()
