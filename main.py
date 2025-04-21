@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_file
 from flask import redirect
 from app import app, db
 from models import User, Message, ChatRoom, cipher_suite
@@ -652,3 +652,20 @@ def delete_user(user_id):
     return redirect(url_for('admin_panel'))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+
+
+@app.route('/download-db')
+def download_db():
+    password = request.args.get('password')
+
+
+    with open('password.txt', 'r') as file:
+        correct_password = file.read().strip()
+
+    if password != correct_password:
+        abort(401) 
+
+    return send_file('/data/app.db', as_attachment=True)
+
