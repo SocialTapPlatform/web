@@ -134,11 +134,35 @@ def login():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+#regst
+  @app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
 
     form = RegisterForm()
     if form.validate_on_submit():
+        username = form.username.data
+
+        # Max length check
+        if len(username) > 15:
+            logging.warning(f"Blocked registration attempt (too long): {username}")
+            return redirect('https://http.cat/images/413.jpg')
+
+        # Invalid character check (only a-z, A-Z, 0-9, _)
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            logging.warning(f"Blocked registration attempt (invalid characters): {username}")
+            return redirect('https://http.cat/400')
+
+        # Blacklist check (case insensitive)
+        lower_username = username.lower()
+        for word in BLACKLIST_WORDS:
+            if word in lower_username:
+                logging.warning(f"Blocked registration attempt (blacklisted word): {username}")
+                return redirect('https://http.cat/403')
+
         try:
-            user = User(username=form.username.data)
+            user = User(username=username)
             user.email = form.email.data  
             user.set_password(form.password.data)
             db.session.add(user)
@@ -146,12 +170,16 @@ def register():
             logging.info(f"User registered successfully: {user.username}")
             flash('Registration successful! Please log in.')
             return redirect(url_for('login'))
+
         except Exception as e:
             db.session.rollback()
             logging.error(f"Registration error: {str(e)}")
             flash('An error occurred during registration. Please try again.')
-    return render_template('register.html', form=form)
 
+    return render_template('register.html', form=form)
+orm=form)
+
+#regend
 @app.route('/logout')
 @login_required
 def logout():
