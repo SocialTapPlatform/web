@@ -177,7 +177,6 @@ def register():
             flash('An error occurred during registration. Please try again.')
 
     return render_template('register.html', form=form)
-orm=form)
 
 #regend
 @app.route('/logout')
