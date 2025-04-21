@@ -130,10 +130,6 @@ def login():
             flash('An error occurred during login. Please try again.')
     return render_template('login.html', form=form)
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
 #regst
   @app.route('/register', methods=['GET', 'POST'])
 def register():
