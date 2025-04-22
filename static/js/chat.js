@@ -467,3 +467,31 @@ function deleteMessage(messageId, event) {
         alert('Failed to delete message');
     });
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetchStatus();
+});
+
+function fetchStatus() {
+  const username = document.getElementById("currentUsername").innerText;
+  fetch(`/api/status/${username}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("userStatusBadge").innerText = data.status;
+    });
+}
+function updateStatus() {
+  const username = document.getElementById("currentUsername").innerText;
+  const newStatus = document.getElementById("statusInput").value;
+  fetch(`/api/status/${username}`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({status: newStatus})
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("userStatusBadge").innerText = data.status;
+    new bootstrap.Modal(document.getElementById("setStatusModal")).hide();
+  });
+}
