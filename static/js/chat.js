@@ -468,7 +468,7 @@ function deleteMessage(messageId, event) {
     });
 }
 
-
+//stuff
 document.addEventListener("DOMContentLoaded", () => {
   fetchStatus();
 });
@@ -480,13 +480,14 @@ function fetchStatus() {
     .then(data => {
       document.getElementById("userStatusBadge").innerText = data.status;
     });
-}
-function updateStatus() {
+    
+ function updateStatus() {
   const username = document.getElementById("currentUsername").innerText;
   const newStatus = document.getElementById("statusInput").value;
   fetch(`/api/status/${username}`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
+    credentials: 'include',  // important or else flask doesn't do flasking
     body: JSON.stringify({status: newStatus})
   })
   .then(response => response.json())
