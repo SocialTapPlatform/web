@@ -468,31 +468,3 @@ function deleteMessage(messageId, event) {
     });
 }
 
-//stuff
-document.addEventListener("DOMContentLoaded", () => {
-  fetchStatus();
-});
-
-function fetchStatus() {
-  const username = document.getElementById("currentUsername").innerText;
-  fetch(`/api/status/${username}`)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("userStatusBadge").innerText = data.status;
-    });
-    
- function updateStatus() {
-  const username = document.getElementById("currentUsername").innerText;
-  const newStatus = document.getElementById("statusInput").value;
-  fetch(`/api/status/${username}`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    credentials: 'include',  // important or else flask doesn't do flasking
-    body: JSON.stringify({status: newStatus})
-  })
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById("userStatusBadge").innerText = data.status;
-    new bootstrap.Modal(document.getElementById("setStatusModal")).hide();
-  });
-}
