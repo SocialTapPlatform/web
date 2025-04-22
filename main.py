@@ -13,6 +13,13 @@ import logging
 import os
 import re
 import time
+from flask_login import LoginManager
+
+login_manager = LoginManager()
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return jsonify({"error": "Unauthorized"}), 403
 logging.basicConfig(level=logging.DEBUG)
 
 #These WP bots thinking I'm using WP are getting pretty annoying
