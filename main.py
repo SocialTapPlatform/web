@@ -660,28 +660,3 @@ def delete_user(user_id):
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
-STATUSES_FILE = 'statuses.json'
-
-def load_statuses():
-    with open(STATUSES_FILE, 'r') as f:
-        return json.load(f)
-
-def save_statuses(statuses):
-    with open(STATUSES_FILE, 'w') as f:
-        json.dump(statuses, f)
-
-@app.route('/api/status/<username>', methods=['GET'])
-def get_status(username):
-    statuses = load_statuses()
-    return jsonify({"status": statuses.get(username, "No Status")})
-
-@app.route('/api/status/<username>', methods=['POST'])
-@login_required
-def set_status(username):
-    if current_user.username != username:
-        return jsonify({"error": "Unauthorized"}), 403
-    new_status = request.json.get('status', 'Available')
-    statuses = load_statuses()
-    statuses[username] = new_status
-    save_statuses(statuses)
-    return jsonify({"status": new_status})
