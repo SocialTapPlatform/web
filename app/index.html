@@ -117,6 +117,30 @@
                             </a>
                         </div>
                     </div>
+                  <div class="d-flex gap-2">
+  <span class="badge bg-success" id="userStatusBadge">Loading...</span>
+  <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#setStatusModal">
+    <i class="bi bi-pencil"></i>
+  </button>
+</div>
+<div class="modal fade" id="setStatusModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Set Your Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="statusInput" class="form-control" placeholder="Type your status">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="updateStatus()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+                
                     <div class="card-body chat-messages" id="messageContainer">
                         <div class="text-center text-muted mb-3">
                             <small>Messages will appear here...</small>
