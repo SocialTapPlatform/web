@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download SocialTap Desktop</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4 mb-4">Download SocialTap Desktop</h1>
+                <p class="lead mb-4">--for Windows and MacOS--</p>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="bi bi-windows mb-3" style="font-size: 2rem;"></i>
+                                <h3>Windows</h3>
+                                <p>Windows 10 and later</p>
+                                <a href="https://www.dropbox.com/scl/fi/n9tvav5gmo9w8zau761zw/SocialTap-Setup-2.0.0.exe?rlkey=bvc5dxyjc89jaedvuyfpoxbsi&e=1&st=72p60k3a&dl=0" class="btn btn-primary">
+                                    <i class="bi bi-download"></i> Download for Windows
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="bi bi-apple mb-3" style="font-size: 2rem;"></i>
+                                <h3>macOS</h3>
+                                <p>macOS 10.15 and later</p>
+                                <a href="https://www.dropbox.com/scl/fi/qkrv8x7u1hq77cvfkkhoz/SocialTap-2.0.0.dmg?rlkey=it06vp4hjvppmnes3y13ap017&st=rszqe2al&dl=0" class="btn btn-primary">
+                                    <i class="bi bi-download"></i> Download for macOS
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Return to Web Version
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
