@@ -56,6 +56,17 @@
       color: #999;
       padding: 1rem;
     }
+     }
+    a {
+      color: #39ff14;
+      text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #fff;
+      text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
+    }
+  
   </style>
 </head>
 <body>
@@ -67,7 +78,7 @@
   <main class="gallery">
     <!-- Repeat this card for each quote -->
     <div class="quote-card">
-      <img src="/qbimages/boring.png" alt="Well, stopping for red lights is boring. />
+      <img src="{{ url_for('static', filename='qbimages/boring.png') }}" alt="Well, stopping for red lights is boring. />
       <div class="caption">"Boring."</div>
     </div>
     <!-- Add more quote-card blocks below -->
