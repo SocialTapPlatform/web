@@ -657,5 +657,5 @@ if __name__ == '__main__':
 
 @app.route('/quotes')
 def quotes():
-    return render_template('/quotes.html')
+    return render_template('/quote-book/index.html')
 
