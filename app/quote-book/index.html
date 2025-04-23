@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SocialTap Quote Book</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .quote-card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .quote-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .caption {
+      padding: 0.75rem;
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📖 SocialTap Quote Book</h1>
+    <p style="font-size: 0.95rem;">Quotes all taken from messages in SocialTap. Have a quote? Submit one </p><a href="mailto:quotes@socialtap.social?subject=New%20quote%20submission&body=Attach%20your%20quote%20to%20the%20email!%0AWe%20will%20not%20accept%20quotes%20from%20deleted%2Fbanned%20users%20or%20anything%20that%20goes%20against%20our%20guidelines.">here</a><p>!</p>
+  </header>
+
+  <main class="gallery">
+    <!-- Repeat this card for each quote -->
+    <div class="quote-card">
+      <img src="boring.png" alt="Well, stopping for red lights is boring. />
+      <div class="caption">"Boring."</div>
+    </div>
+    <!-- Add more quote-card blocks below -->
+  </main>
+
+  <footer>
+    &copy; 2025 SocialTap. All screenshots belong to their respective users.
+  </footer>
+</body>
+</html>
