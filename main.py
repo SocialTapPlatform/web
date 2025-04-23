@@ -655,17 +655,7 @@ if __name__ == '__main__':
 
 
 
-
-@app.route('/download-db')
-def download_db():
-    password = request.args.get('password')
-
-
-    with open('password.txt', 'r') as file:
-        correct_password = file.read().strip()
-
-    if password != correct_password:
-        abort(401) 
-
-    return send_file('/data/app.db', as_attachment=True)
+@app.route('/quotes')
+def quotes():
+    return render_template('/quotes.html')
 
