@@ -685,7 +685,8 @@ def delete_chat(chat_id):
     if chat_id == 0:
         return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
-    message = Message.query.filter_by(chat_id=chat_id, user_id=current_user.id).first()
+    # Match the correct field name in your Message model
+    message = Message.query.filter_by(chat_room_id=chat_id, user_id=current_user.id).first()
 
     if not message:
         return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
@@ -698,4 +699,3 @@ def delete_chat(chat_id):
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({"success": "Chat deleted successfully."}), 200
-
