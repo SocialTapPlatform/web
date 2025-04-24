@@ -18,6 +18,7 @@ from flask_cors import CORS
 logging.basicConfig(level=logging.DEBUG)
 
 CORS(app)
+DB_PATH = "/data/app.db"
 
 #These WP bots thinking I'm using WP are getting pretty annoying
 @app.before_request
@@ -675,34 +676,35 @@ if __name__ == '__main__':
 
 
 
-#delete this below if something goes wrong
+
+
 @app.route('/api/chats/delete/<int:chat_id>', methods=['DELETE'])
 def delete_chat(chat_id):
-    # Prevent deletion of chat ID 0
     if chat_id == 0:
         return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
-    # Get the user ID from the request 
-    user_id = request.json.get('user_id')  
-    
+    data = request.get_json()
+    user_id = data.get('user_id') if data else None
+
     if not user_id:
         return jsonify({"error": "User ID is required."}), 400
 
-   
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
 
-    # Check if the user has sent the message (chat) before
-    query = "SELECT * FROM messages WHERE chat_id = ? AND user_id = ?"
-    message = conn.execute(query, (chat_id, user_id)).fetchone()
+            # Check if the user sent this chat
+            cursor.execute("SELECT 1 FROM messages WHERE chat_id = ? AND user_id = ?", (chat_id, user_id))
+            message = cursor.fetchone()
 
-    # If the user has not sent the message, deny the deletion
-    if not message:
-        conn.close()
-        return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
+            if not message:
+                return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
 
-    # If the user sent the message, proceed with the deletion
-    delete_query = "DELETE FROM messages WHERE chat_id = ? AND user_id = ?"
-    conn.execute(delete_query, (chat_id, user_id))
-    conn.commit()
-    conn.close()
+            # Delete the message
+            cursor.execute("DELETE FROM messages WHERE chat_id = ? AND user_id = ?", (chat_id, user_id))
+            conn.commit()
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({"success": "Chat deleted successfully."}), 200
