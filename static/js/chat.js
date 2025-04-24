@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const messagePollingInterval = setInterval(fetchMessages, 3000);
     const chatPollingInterval = setInterval(loadChatRooms, 10000);
     
+    
     // Check if window has focus
     window.addEventListener('focus', function() {
         windowHasFocus = true;
@@ -103,7 +104,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (chatId !== activeChat) {
                 activeChat = chatId;
                 activeChatId.value = chatId;
-                
+
+                // Chat delete button click
+chatList.addEventListener('click', async function(e) {
+    const deleteBtn = e.target.closest('.delete-chat-btn');
+    if (deleteBtn) {
+        e.stopPropagation();
+        const chatId = deleteBtn.dataset.chatId;
+        if (chatId !== "0" && confirm('Are you sure you want to delete this chat?')) {
+            await deleteChat(chatId);
+        }
+    }
+});
+
                 // Update UI
                 document.querySelectorAll('#chatList .list-group-item').forEach(item => {
                     item.classList.remove('active');
@@ -312,12 +325,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     chatItem.className = `list-group-item d-flex justify-content-between align-items-center
                                         ${chat.id == activeChatIdValue ? 'active' : ''}`;
                     chatItem.dataset.chatId = chat.id;
-                    chatItem.innerHTML = `
-                        <div>
-                            <div class="fw-bold">${chat.name}</div>
-                            <small class="text-muted">${otherUsers}</small>
-                        </div>
-                    `;
+                   chatItem.innerHTML = `
+    <div class="d-flex justify-content-between align-items-center w-100">
+        <div>
+            <div class="fw-bold">${chat.name}</div>
+            <small class="text-muted">${otherUsers}</small>
+        </div>
+        ${chat.id !== 0 ? `
+            <button class="btn btn-sm btn-danger ms-2 delete-chat-btn" data-chat-id="${chat.id}">
+                <i class="bi bi-trash"></i>
+            </button>` : ''
+        }
+    </div>
+`;
+
                     chatList.appendChild(chatItem);
                 });
             }
@@ -466,4 +487,30 @@ function deleteMessage(messageId, event) {
         console.error('Error deleting message:', error);
         alert('Failed to delete message');
     });
+}
+
+async function deleteChat(chatId) {
+    try {
+        const response = await fetch(`/api/chats/delete/${chatId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            await loadChatRooms();
+
+            // Reset active chat if it was deleted
+            if (activeChat === chatId) {
+                activeChat = '';
+                activeChatId.value = '';
+                chatTitle.textContent = 'Select a Chat';
+                messageContainer.innerHTML = '';
+            }
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Failed to delete chat');
+        }
+    } catch (error) {
+        console.error('Error deleting chat:', error);
+        alert('Failed to delete chat');
+    }
 }
