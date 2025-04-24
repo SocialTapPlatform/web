@@ -35,6 +35,12 @@ def handle_500(e):
     if request.path.startswith("/api/"):
         
         return jsonify({"error": "Internal server error"}), 500
+
+    else:
+        if request.path.startswith("/change-username"):
+
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal server error"}), 500
     else:
        
         return redirect("https://http.cat/500")
