@@ -682,8 +682,8 @@ def delete_chat(chat_id):
     if chat_id == 0:
         return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
-    # Get the user ID from the request (you can modify this part based on your authentication method)
-    user_id = request.json.get('user_id')  # Assuming you're sending the user ID in the request body
+    # Get the user ID from the request 
+    user_id = request.json.get('user_id')  
     
     if not user_id:
         return jsonify({"error": "User ID is required."}), 400
