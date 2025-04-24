@@ -158,33 +158,37 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-    <script>
-        // JavaScript function to delete the chat
-        function deleteChat(chatId) {
-            const userId = {{ current_user.id }}; //sauce
+   <script>
+  // Your JavaScript code here
 
-            fetch(`/api/chats/delete/${chatId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ user_id: userId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Chat deleted successfully.');
-                    // Remove the chat element from the DOM
-                    document.querySelector(`[data-chat-id="${chatId}"]`).remove();
-                } else {
-                    alert(data.error); // Show error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-            });
-        }
-    </script>
+  function deleteChat(chatId) {
+    fetch(`https://www.socialtap.social/api/chats/delete/${chatId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Chat deleted successfully');
+        // Add logic here to remove the chat from the sidebar UI or alert the user.
+      } else {
+        console.error('Failed to delete chat');
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting chat:', error);
+    });
+  }
+
+  // Example of binding the delete functionality to the button in the sidebar
+  document.querySelectorAll('.delete-chat-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const chatId = event.target.closest('li').getAttribute('data-chat-id');
+      deleteChat(chatId);
+    });
+  });
+</script>
+
 </body>
 </html>
