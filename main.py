@@ -678,24 +678,34 @@ if __name__ == '__main__':
 
 
 
-
 @app.route('/api/chats/delete/<int:chat_id>', methods=['DELETE'])
 @login_required
 def delete_chat(chat_id):
     if chat_id == 0:
         return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
-    # Match the correct field name in your Message model
-    message = Message.query.filter_by(chat_room_id=chat_id, user_id=current_user.id).first()
+  
+    chat_room = ChatRoom.query.get(chat_id)
+    
+    if not chat_room:
+        return jsonify({"error": "Chat room not found."}), 404
 
-    if not message:
-        return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
+
+    if current_user not in chat_room.participants:
+        return jsonify({"error": "You do not have permission to delete this chat."}), 403
 
     try:
-        db.session.delete(message)
+
+        Message.query.filter_by(chat_room_id=chat_id).delete()
+
+
+        db.session.delete(chat_room)
+
+      
         db.session.commit()
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-    return jsonify({"success": "Chat deleted successfully."}), 200
+    return jsonify({"success": "Chat and all its messages have been deleted."}), 200
+
