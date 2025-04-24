@@ -655,7 +655,35 @@ if __name__ == '__main__':
 
 
 
-@app.route('/quotes')
-def quotes():
-    return render_template('/quote-book/index.html')
+#delete this below if something goes wrong
+@app.route('/api/chats/delete/<int:chat_id>', methods=['DELETE'])
+def delete_chat(chat_id):
+    # Prevent deletion of chat ID 0
+    if chat_id == 0:
+        return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
+    # Get the user ID from the request (you can modify this part based on your authentication method)
+    user_id = request.json.get('user_id')  # Assuming you're sending the user ID in the request body
+    
+    if not user_id:
+        return jsonify({"error": "User ID is required."}), 400
+
+    # Connect to the database
+    conn = get_db_connection()
+
+    # Check if the user has sent the message (chat) before
+    query = "SELECT * FROM messages WHERE chat_id = ? AND user_id = ?"
+    message = conn.execute(query, (chat_id, user_id)).fetchone()
+
+    # If the user has not sent the message, deny the deletion
+    if not message:
+        conn.close()
+        return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
+
+    # If the user sent the message, proceed with the deletion
+    delete_query = "DELETE FROM messages WHERE chat_id = ? AND user_id = ?"
+    conn.execute(delete_query, (chat_id, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Chat deleted successfully."}), 200
