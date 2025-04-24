@@ -60,29 +60,30 @@
             </div>
         </div>
 
-        <!-- Change Username Form (Only Admins Can See) -->
-        {% if current_user.is_admin() %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4>Change Username</h4>
-                <form method="POST" action="{{ url_for('change_username') }}">
-                    <div class="mb-3">
-                        <label for="user_id" class="form-label">Select User</label>
-                        <select name="user_id" id="user_id" class="form-select" required>
-                            {% for user in users %}
-                                <option value="{{ user.id }}">{{ user.username }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="new_username" class="form-label">New Username</label>
-                        <input type="text" name="new_username" id="new_username" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Change Username</button>
-                </form>
+       <!-- Change Username Form (Only Admins Can See) -->
+{% if current_user.is_admin() %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Change Username</h4>
+        <form method="POST" action="{{ url_for('change_username') }}">
+            <div class="mb-3">
+                <label for="user_id" class="form-label">Select User</label>
+                <select name="user_id" id="user_id" class="form-select" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}" {% if user.id == current_user.id %} selected {% endif %}>{{ user.username }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        </div>
-        {% endif %}
+            <div class="mb-3">
+                <label for="new_username" class="form-label">New Username</label>
+                <input type="text" name="username" id="new_username" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Change Username</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 
         <!-- Users Table -->
         <div class="table-responsive">
