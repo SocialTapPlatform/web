@@ -680,32 +680,22 @@ if __name__ == '__main__':
 
 
 @app.route('/api/chats/delete/<int:chat_id>', methods=['DELETE'])
+@login_required
 def delete_chat(chat_id):
     if chat_id == 0:
         return jsonify({"error": "Chat ID 0 cannot be deleted."}), 400
 
-    data = request.get_json()
-    user_id = data.get('user_id') if data else None
+    message = Message.query.filter_by(chat_id=chat_id, user_id=current_user.id).first()
 
-    if not user_id:
-        return jsonify({"error": "User ID is required."}), 400
+    if not message:
+        return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
 
     try:
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-
-            # Check if the user sent this chat
-            cursor.execute("SELECT 1 FROM messages WHERE chat_id = ? AND user_id = ?", (chat_id, user_id))
-            message = cursor.fetchone()
-
-            if not message:
-                return jsonify({"error": "You have not sent this message and cannot delete it."}), 403
-
-            # Delete the message
-            cursor.execute("DELETE FROM messages WHERE chat_id = ? AND user_id = ?", (chat_id, user_id))
-            conn.commit()
-
+        db.session.delete(message)
+        db.session.commit()
     except Exception as e:
+        db.session.rollback()
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({"success": "Chat deleted successfully."}), 200
+
