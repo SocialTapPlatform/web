@@ -721,28 +721,24 @@ def apidocs():
 def change_username():
     if not current_user.is_admin():
         flash('You do not have permission to change usernames.', 'danger')
-        return redirect(url_for('admin_users'))
+        return redirect(url_for('admin'))
 
-    # Ensure 'user_id' and 'username' are provided
     user_id = request.form.get('user_id')
-    username = request.form.get('username')
+    new_username = request.form.get('new_username')
 
-    if not user_id or not username:
-        flash('User ID and Username must be provided.', 'danger')
-        return redirect(url_for('admin_users'))
+    if not user_id or not new_username:
+        flash('Missing user ID or new username.', 'danger')
+        return redirect(url_for('admin'))
 
     user = User.query.get(user_id)
-
     if not user:
         flash('User not found.', 'danger')
-    else:
-        if username != user.username:  
-            user.username = username  
-            db.session.commit()  
-            flash('Username updated successfully.', 'success')
-        else:
-            flash('No changes made. Username is the same.', 'info')
+        return redirect(url_for('admin'))
 
-    return redirect(url_for('admin'))  
+    user.username = new_username
+    db.session.commit()
+    flash('Username updated successfully.', 'success')
+    return redirect(url_for('admin'))
+ 
 
 
