@@ -729,10 +729,19 @@ def change_username():
         return redirect(url_for('admin_users'))
 
     user_id = request.form['user_id']
-    new_username = request.form['new_username']
+    username = request.form['username']  
     user = User.query.get(user_id)
 
     if not user:
         flash('User not found.', 'danger')
-    return redirect(url_for('admin'))
+    else:
+        if username != user.username:  
+            user.username = username 
+            db.session.commit()  
+            flash('Username updated successfully.', 'success')
+        else:
+            flash('No changes made. Username is the same.', 'info')
+
+    return redirect(url_for('admin_users'))  
+
 
