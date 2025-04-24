@@ -13,7 +13,11 @@ import logging
 import os
 import re
 import time
+from flask_cors import CORS
+
 logging.basicConfig(level=logging.DEBUG)
+
+(CORS)app
 
 #These WP bots thinking I'm using WP are getting pretty annoying
 @app.before_request
