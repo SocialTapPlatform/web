@@ -688,8 +688,7 @@ def delete_chat(chat_id):
     if not user_id:
         return jsonify({"error": "User ID is required."}), 400
 
-    # Connect to the database
-    conn = get_db_connection()
+   
 
     # Check if the user has sent the message (chat) before
     query = "SELECT * FROM messages WHERE chat_id = ? AND user_id = ?"
