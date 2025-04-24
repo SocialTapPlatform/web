@@ -728,4 +728,5 @@ def change_username():
 
     if not user:
         flash('User not found.', 'danger')
-        return redirect(url_for('admin
+    return redirect(url_for('admin'))
+
