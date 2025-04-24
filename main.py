@@ -723,9 +723,8 @@ def change_username():
         flash('You do not have permission to change usernames.', 'danger')
         return redirect(url_for('admin_users'))
 
-    # Ensure 'user_id' and 'username' are provided
     user_id = request.form.get('user_id')
-    username = request.form.get('username')
+    username = request.form.get('new_username')  # pulled from the form, still called new_username there
 
     if not user_id or not username:
         flash('User ID and Username must be provided.', 'danger')
@@ -736,14 +735,14 @@ def change_username():
     if not user:
         flash('User not found.', 'danger')
     else:
-        if username != user.username:  
-            user.username = username  
-            db.session.commit()  
+        if username != user.username:
+            user.username = username
+            db.session.commit()
             flash('Username updated successfully.', 'success')
         else:
             flash('No changes made. Username is the same.', 'info')
 
-    return redirect(url_for('admin'))  
- 
+    return redirect(url_for('admin'))
+
 
 
