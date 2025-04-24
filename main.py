@@ -713,3 +713,19 @@ def delete_chat(chat_id):
 @login_required
 def apidocs():
     return redirect(url_for('apid'))
+
+
+@app.route('/change-username', methods=['POST'])
+@login_required
+def change_username():
+    if not current_user.is_admin():
+        flash('You do not have permission to change usernames.', 'danger')
+        return redirect(url_for('admin_users'))
+
+    user_id = request.form['user_id']
+    new_username = request.form['new_username']
+    user = User.query.get(user_id)
+
+    if not user:
+        flash('User not found.', 'danger')
+        return redirect(url_for('admin
