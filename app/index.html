@@ -122,32 +122,22 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card-body chat-messages" id="messageContainer">
-                    
-    {% for message in messages %}
-        {% if not is_blocked(current_user.id, message.sender.id) %}
-            <div class="message" id="message-{{ message.id }}">
-                <strong>{{ message.sender.username }}</strong>: {{ message.content }}
-            </div>
+             <div class="card-body chat-messages" id="messageContainer">
+  {% for message in messages %}
+    <div class="message">
+      <p>{{ message.content }}</p>
+
+      {% if message.sender_id != current_user.id %}
+        {% if message.sender_id in blocked_ids %}
+          <button hx-post="/unblock/{{ message.sender_id }}">Unblock</button>
         {% else %}
-            <div class="message blocked-message" id="message-{{ message.id }}">
-                <strong>Message Hidden</strong>: This user has been blocked.
-            </div>
+          <button hx-post="/block/{{ message.sender_id }}">Block</button>
         {% endif %}
-        
-        {% if message.sender.id != current_user.id and not is_blocked(current_user.id, message.sender.id) %}
-            <!-- Block Button -->
-            <form method="POST" action="{{ url_for('block_user_route', user_id=message.sender.id) }}">
-                <button type="submit" class="btn btn-sm btn-danger">Block</button>
-            </form>
-        {% elif message.sender.id != current_user.id and is_blocked(current_user.id, message.sender.id) %}
-            <!-- Unblock Button -->
-            <form method="POST" action="{{ url_for('unblock_user_route', user_id=message.sender.id) }}">
-                <button type="submit" class="btn btn-sm btn-success">Unblock</button>
-            </form>
-        {% endif %}
-    {% endfor %}
+      {% endif %}
+    </div>
+  {% endfor %}
 </div>
+
 
                         <div class="text-center text-muted mb-3">
                             <small>Messages will appear here...</small>
