@@ -272,6 +272,9 @@ def view_chat(chat_id):
 @app.route('/messages')
 @login_required
 def get_messages():
+    content = request.form["message"]
+    if len(content) > 500:
+        return "Message too long (max 500 characters)", 400
     chat_id = request.args.get('chat_id', type=int)
     
     if chat_id:
