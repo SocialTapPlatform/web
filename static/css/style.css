@@ -161,3 +161,12 @@
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(-20px); }
 }
+
+.blocked-message {
+    background-color: #f8d7da; 
+    padding: 10px;
+    border-radius: 5px;
+    color: #721c24; 
+    font-weight: bold;
+}
+
