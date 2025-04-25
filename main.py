@@ -786,8 +786,6 @@ def change_username():
 
     return redirect(url_for('admin'))
 
-from flask import render_template, request, url_for, flash, current_user
-
 @app.route('/block/<int:user_id>', methods=['POST'])
 @login_required
 def block_user_route(user_id):
