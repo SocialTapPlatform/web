@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadChatRooms();
     const messagePollingInterval = setInterval(fetchMessages, 3000);
     const chatPollingInterval = setInterval(loadChatRooms, 10000);
+   
     
     
     // Check if window has focus
@@ -59,12 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Request notification permission
+    
     function requestNotificationPermission() {
         Notification.requestPermission().then(function(permission) {
             if (permission === 'granted') {
                 notificationsEnabled = true;
-                // Remove the notification button after permission is granted
+                
                 const notifyBtn = document.querySelector('.btn-outline-secondary');
                 if (notifyBtn) {
                     notifyBtn.remove();
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (notificationsEnabled && !windowHasFocus) {
             const notification = new Notification(title, {
                 body: body,
-                icon: '/static/favicon.ico' // You may want to add a favicon to your static folder
+                icon: '/static/favicon.ico' 
             });
             
             // Close the notification after 5 seconds
@@ -253,52 +254,53 @@ chatList.addEventListener('click', async function(e) {
     });
 
     async function fetchMessages() {
-        try {
-            let url = '/messages';
-            if (activeChat) {
-                url += `?chat_id=${activeChat}`;
-            }
-            
-            const response = await fetch(url);
-            if (response.ok) {
-                const messages = await response.json();
-                
-                // Check for new messages
-                if (messages.length > 0) {
-                    const latestMessageId = messages[messages.length - 1].id;
-                    
-                    // If we have new messages and this isn't the first load
-                    if (lastMessageId > 0 && latestMessageId > lastMessageId && !windowHasFocus) {
-                        // Find new messages
-                        const newMessages = messages.filter(msg => msg.id > lastMessageId);
-                        
-                        // Show notifications for new messages
-                        newMessages.forEach(msg => {
-                            if (msg.username !== currentUsername.textContent) {
-                                const chatName = chatTitle.textContent;
-                                showNotification(
-                                    `New message from ${msg.username}`,
-                                    `${chatName}: ${msg.content}`
-                                );
-                            }
-                        });
-                    }
-                    
-                    // Update last message ID
-                    lastMessageId = latestMessageId;
-                }
-                
-                // Update UI if message count changed
-                if (messages.length !== lastMessageCount) {
-                    updateMessages(messages);
-                    lastMessageCount = messages.length;
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching messages:', error);
+    try {
+        let url = '/messages';
+        if (activeChat) {
+            url += `?chat_id=${activeChat}`;
         }
-    }
+        
+        const response = await fetch(url);
+        if (response.ok) {
+            const messages = await response.json();
+            
+            if (messages.length > 0) {
+                const latestMessageId = messages[messages.length - 1].id;
 
+                if (lastMessageId > 0 && latestMessageId > lastMessageId && !windowHasFocus) {
+                    const newMessages = messages.filter(msg => msg.id > lastMessageId);
+
+                    let soundPlayed = false;
+
+                    newMessages.forEach(msg => {
+                        if (msg.username !== currentUsername.textContent) {
+                            const chatName = chatTitle.textContent;
+                            showNotification(
+                                `New message from ${msg.username}`,
+                                `${chatName}: ${msg.content}`
+                            );
+
+                            if (!soundPlayed && localStorage.getItem('soundEnabled') === 'true') {
+                                const sound = new Audio('/static/sounds/notification.mp3');
+                                sound.play().catch(() => {});
+                                soundPlayed = true;
+                            }
+                        }
+                    });
+                }
+
+                lastMessageId = latestMessageId;
+            }
+
+            if (messages.length !== lastMessageCount) {
+                updateMessages(messages);
+                lastMessageCount = messages.length;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+}
     async function loadChatRooms() {
         try {
             const response = await fetch('/api/chats');
