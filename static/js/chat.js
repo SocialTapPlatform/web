@@ -253,54 +253,67 @@ chatList.addEventListener('click', async function(e) {
         }
     });
 
-    async function fetchMessages() {
-    try {
-        let url = '/messages';
-        if (activeChat) {
-            url += `?chat_id=${activeChat}`;
-        }
-        
-        const response = await fetch(url);
-        if (response.ok) {
-            const messages = await response.json();
-            
-            if (messages.length > 0) {
-                const latestMessageId = messages[messages.length - 1].id;
+    let soundEnabled = false;
 
-                if (lastMessageId > 0 && latestMessageId > lastMessageId && !windowHasFocus) {
-                    const newMessages = messages.filter(msg => msg.id > lastMessageId);
 
-                    let soundPlayed = false;
-
-                    newMessages.forEach(msg => {
-                        if (msg.username !== currentUsername.textContent) {
-                            const chatName = chatTitle.textContent;
-                            showNotification(
-                                `New message from ${msg.username}`,
-                                `${chatName}: ${msg.content}`
-                            );
-
-                            if (!soundPlayed && localStorage.getItem('soundEnabled') === 'true') {
-                                const sound = new Audio('/static/sounds/notification.mp3');
-                                sound.play().catch(() => {});
-                                soundPlayed = true;
-                            }
-                        }
-                    });
-                }
-
-                lastMessageId = latestMessageId;
-            }
-
-            if (messages.length !== lastMessageCount) {
-                updateMessages(messages);
-                lastMessageCount = messages.length;
-            }
-        }
-    } catch (error) {
-        console.error('Error fetching messages:', error);
-    }
+function enableSound() {
+    soundEnabled = true;
+    document.removeEventListener('click', enableSound);
+    document.removeEventListener('keydown', enableSound);
 }
+document.addEventListener('click', enableSound);
+document.addEventListener('keydown', enableSound);
+
+async function fetchMessages() {
+    try {
+        let url = '/messages';
+        if (activeChat) {
+            url += `?chat_id=${activeChat}`;
+        }
+        
+        const response = await fetch(url);
+        if (response.ok) {
+            const messages = await response.json();
+            
+            if (messages.length > 0) {
+                const latestMessageId = messages[messages.length - 1].id;
+
+                if (lastMessageId > 0 && latestMessageId > lastMessageId && !windowHasFocus) {
+                    const newMessages = messages.filter(msg => msg.id > lastMessageId);
+                    
+                    newMessages.forEach(msg => {
+                        if (msg.username !== currentUsername.textContent) {
+                            const chatName = chatTitle.textContent;
+
+                            // Show browser notification
+                            showNotification(
+                                `New message from ${msg.username}`,
+                                `${chatName}: ${msg.content}`
+                            );
+
+                            // Play notification sound
+                            if (soundEnabled) {
+                                const audio = new Audio('/static/sounds/notification.mp3');
+                                audio.play().catch(err => {
+                                    console.warn("Sound blocked or failed to play:", err);
+                                });
+                            }
+                        }
+                    });
+                }
+
+                lastMessageId = latestMessageId;
+            }
+
+            if (messages.length !== lastMessageCount) {
+                updateMessages(messages);
+                lastMessageCount = messages.length;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+}                   
     async function loadChatRooms() {
         try {
             const response = await fetch('/api/chats');
