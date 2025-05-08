@@ -640,7 +640,13 @@ def delete_message(message_id):
     
     # Otherwise, redirect back
     flash('Message deleted successfully.', 'success')
-    return redirect(request.referrer or url_for('index'))
+    referrer_url = request.referrer
+    if referrer_url:
+        from urllib.parse import urlparse
+        parsed_url = urlparse(referrer_url)
+        if parsed_url.netloc == request.host:
+            return redirect(referrer_url)
+    return redirect(url_for('index'))
 
 @app.route('/admin/users')
 @login_required
