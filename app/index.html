@@ -26,55 +26,113 @@
 </head>
 
 <body data-is-admin="{{ current_user.is_admin()|string }}">
-   <div class="modal fade" id="newChatModal" tabindex="-1">
-  <div class="modal-dialog">
+  <!-- Group/One-on-One Chat Modal -->
+<div class="modal fade" id="groupChatModal" tabindex="-1" aria-labelledby="groupChatModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
+
       <div class="modal-header">
-        <h5 class="modal-title">Start New Chat</h5>
+        <h5 class="modal-title" id="groupChatModalLabel">New Chat</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <!-- Tabs for Private / Group -->
-        <ul class="nav nav-tabs" id="chatTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="private-tab" data-bs-toggle="tab" data-bs-target="#privateChat"
-                    type="button" role="tab">Private</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="group-tab" data-bs-toggle="tab" data-bs-target="#groupChat"
-                    type="button" role="tab">Group</button>
-          </li>
-        </ul>
-
-        <div class="tab-content mt-3">
-          <!-- Private Chat Tab -->
-          <div class="tab-pane fade show active" id="privateChat" role="tabpanel">
-            <input type="text" class="form-control mb-3" id="userSearchInput" placeholder="Search users...">
-            <div id="userList" class="list-group">
-              <div class="text-center text-muted p-3">
-                <small>Loading users...</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Group Chat Tab -->
-          <div class="tab-pane fade" id="groupChat" role="tabpanel">
-            <input type="text" class="form-control mb-2" id="groupNameInput" placeholder="Group name">
-            <input type="text" class="form-control mb-2" id="groupSearchInput" placeholder="Search users...">
-            <div id="groupUserList" class="list-group mb-2">
-              <div class="text-center text-muted p-3">
-                <small>Loading users...</small>
-              </div>
-            </div>
-            <button class="btn btn-primary w-100" onclick="createGroupChat()">Create Group Chat</button>
+        <input type="text" id="groupUserSearch" class="form-control mb-3" placeholder="Search users...">
+        <div id="groupUserList" class="list-group">
+          <div class="text-center text-muted p-3">
+            <small>Loading users...</small>
           </div>
         </div>
       </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" id="startChatBtn">Start Chat</button>
+      </div>
+
     </div>
   </div>
 </div>
 
+<script>
+const groupChatModalEl = document.getElementById('groupChatModal');
+const groupUserList = document.getElementById('groupUserList');
+const groupUserSearch = document.getElementById('groupUserSearch');
+const startChatBtn = document.getElementById('startChatBtn');
+
+groupChatModalEl.addEventListener('shown.bs.modal', loadGroupUsers);
+
+async function loadGroupUsers() {
+    try {
+        const response = await fetch('/api/users');
+        if (response.ok) {
+            const users = await response.json();
+
+            if (users.length === 0) {
+                groupUserList.innerHTML = `
+                    <div class="text-center text-muted p-3">
+                        <small>No users available</small>
+                    </div>`;
+                return;
+            }
+
+            groupUserList.innerHTML = '';
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'list-group-item';
+                userItem.innerHTML = `
+                    <label class="form-check-label d-flex align-items-center gap-2">
+                        <input type="checkbox" class="form-check-input" name="user_ids[]" value="${user.id}">
+                        ${user.username}
+                    </label>`;
+                groupUserList.appendChild(userItem);
+            });
+        }
+    } catch (err) {
+        console.error('Failed to load users:', err);
+        groupUserList.innerHTML = `
+            <div class="text-center text-muted p-3">
+                <small>Failed to load users</small>
+            </div>`;
+    }
+}
+
+
+groupUserSearch.addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase();
+    const items = groupUserList.querySelectorAll('.list-group-item');
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+
+
+startChatBtn.addEventListener('click', () => {
+    const selectedCheckboxes = groupUserList.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+    if (selectedIds.length === 0) {
+        alert('Please select at least one user.');
+        return;
+    }
+
+    if (selectedIds.length === 1) {
+        // Start 1-on-1 chat
+        const userId = selectedIds[0];
+        console.log('Starting 1-on-1 chat with user ID:', userId);
+        // TODO: Redirect or open existing 1-on-1 chat
+    } else {
+        // Start group chat
+        console.log('Starting group chat with user IDs:', selectedIds);
+        // TODO: Create group chat
+    }
+
+
+    const modal = bootstrap.Modal.getInstance(groupChatModalEl);
+    modal.hide();
+});
+</script>
         <!-- Chat Interface -->
         <div class="row">
             <!-- Sidebar with chat list -->
