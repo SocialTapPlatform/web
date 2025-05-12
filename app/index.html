@@ -26,29 +26,54 @@
 </head>
 
 <body data-is-admin="{{ current_user.is_admin()|string }}">
-    <div class="container-fluid py-4">
-        <!-- New Chat Modal -->
-        <div class="modal fade" id="newChatModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">New Chat</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" id="userSearchInput" 
-                                   placeholder="Search users...">
-                        </div>
-                        <div id="userList" class="list-group">
-                            <div class="text-center text-muted p-3">
-                                <small>Loading users...</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+   <div class="modal fade" id="newChatModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Start New Chat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Tabs for Private / Group -->
+        <ul class="nav nav-tabs" id="chatTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="private-tab" data-bs-toggle="tab" data-bs-target="#privateChat"
+                    type="button" role="tab">Private</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="group-tab" data-bs-toggle="tab" data-bs-target="#groupChat"
+                    type="button" role="tab">Group</button>
+          </li>
+        </ul>
+
+        <div class="tab-content mt-3">
+          <!-- Private Chat Tab -->
+          <div class="tab-pane fade show active" id="privateChat" role="tabpanel">
+            <input type="text" class="form-control mb-3" id="userSearchInput" placeholder="Search users...">
+            <div id="userList" class="list-group">
+              <div class="text-center text-muted p-3">
+                <small>Loading users...</small>
+              </div>
             </div>
+          </div>
+
+          <!-- Group Chat Tab -->
+          <div class="tab-pane fade" id="groupChat" role="tabpanel">
+            <input type="text" class="form-control mb-2" id="groupNameInput" placeholder="Group name">
+            <input type="text" class="form-control mb-2" id="groupSearchInput" placeholder="Search users...">
+            <div id="groupUserList" class="list-group mb-2">
+              <div class="text-center text-muted p-3">
+                <small>Loading users...</small>
+              </div>
+            </div>
+            <button class="btn btn-primary w-100" onclick="createGroupChat()">Create Group Chat</button>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- Chat Interface -->
         <div class="row">
