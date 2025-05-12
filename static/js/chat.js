@@ -529,3 +529,59 @@ async function deleteChat(chatId) {
         alert('Failed to delete chat');
     }
 }
+const groupChatModalEl = document.getElementById('groupChatModal');
+const groupUserList = document.getElementById('groupUserList');
+const groupUserSearch = document.getElementById('groupUserSearch');
+
+groupChatModalEl.addEventListener('shown.bs.modal', loadGroupUsers);
+
+// Load users for group chat modal
+async function loadGroupUsers() {
+    try {
+        const response = await fetch('/api/users');
+        if (response.ok) {
+            const users = await response.json();
+
+            if (users.length === 0) {
+                groupUserList.innerHTML = `
+                    <div class="text-center text-muted p-3">
+                        <small>No users available</small>
+                    </div>
+                `;
+                return;
+            }
+
+            groupUserList.innerHTML = '';
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'list-group-item';
+                userItem.dataset.userId = user.id;
+                userItem.innerHTML = `
+                    <label class="form-check-label d-flex align-items-center gap-2">
+                        <input type="checkbox" class="form-check-input" name="user_ids[]" value="${user.id}">
+                        ${user.username}
+                    </label>
+                `;
+                groupUserList.appendChild(userItem);
+            });
+        }
+    } catch (err) {
+        console.error('Failed to load users:', err);
+        groupUserList.innerHTML = `
+            <div class="text-center text-muted p-3">
+                <small>Failed to load users</small>
+            </div>
+        `;
+    }
+}
+
+
+groupUserSearch.addEventListener('input', function () {
+    const searchTerm = this.value.toLowerCase();
+    const items = groupUserList.querySelectorAll('.list-group-item');
+
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+    });
+});
