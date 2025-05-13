@@ -381,33 +381,50 @@ def get_chats():
 @app.route('/api/chats/create', methods=['POST'])
 @login_required
 def create_chat():
-    user_id = request.form.get('user_id', type=int)
-    
-    if not user_id:
-        return jsonify({'error': 'User ID is required'}), 400
-        
-    # Check if user exists
-    other_user = User.query.get_or_404(user_id)
-    
-    # Check if a chat already exists between these users
-    existing_chats = current_user.chats.all()
-    for chat in existing_chats:
-        if other_user in chat.participants and len(list(chat.participants)) == 2:
-            return jsonify({
-                'success': True,
-                'chat': chat.to_dict()
-            })
-    
-    # Create a new chat room
-    chat_name = f"Chat with {other_user.username}"
-    chat_room = ChatRoom(name=chat_name, is_private=True)
-    
-    # Add both users as participants
-    chat_room.participants.append(current_user)
-    chat_room.participants.append(other_user)
-    
+    data = request.get_json()
+    user_ids = data.get('user_ids')  # list of user IDs
+    chat_name = data.get('name', '').strip()
+
+    if not user_ids or not isinstance(user_ids, list):
+        return jsonify({'error': 'User IDs are required'}), 400
+
+    # Always include current user
+    if current_user.id not in user_ids:
+        user_ids.append(current_user.id)
+
+    # Validate all users exist
+    users = User.query.filter(User.id.in_(user_ids)).all()
+    if len(users) != len(user_ids):
+        return jsonify({'error': 'One or more user IDs are invalid'}), 400
+
+    # Handle DM case (only 2 participants total)
+    if len(user_ids) == 2:
+        other_user_id = next(uid for uid in user_ids if uid != current_user.id)
+        existing_chats = current_user.chats.all()
+        for chat in existing_chats:
+            if other_user_id in [u.id for u in chat.participants] and len(list(chat.participants)) == 2:
+                return jsonify({'success': True, 'chat': chat.to_dict()})
+
+        # No existing DM chat found — create one
+        other_user = User.query.get(other_user_id)
+        dm_name = f"Chat with {other_user.username}"
+        chat_room = ChatRoom(name=dm_name, is_private=True)
+        chat_room.participants.extend(users)
+        db.session.add(chat_room)
+        db.session.commit()
+        return jsonify({'success': True, 'chat': chat_room.to_dict()})
+
+    # Handle group chat
+    if not chat_name:
+        return jsonify({'error': 'Group chat name is required'}), 400
+
+    chat_room = ChatRoom(name=chat_name, is_private=False)  # is_private = False for group
+    chat_room.participants.extend(users)
+
     db.session.add(chat_room)
     db.session.commit()
+
+    return jsonify({'success': True, 'chat': chat_room.to_dict()})    db.session.commit()
     
     return jsonify({
         'success': True,
