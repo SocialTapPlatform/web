@@ -208,11 +208,31 @@ chatList.addEventListener('click', async function(e) {
         });
     });
 
-    // Start chat with selected user
+    let selectedUsers = new Set();
+
+    function updateSelectedUsers() {
+        const selectedCount = selectedUsers.size;
+        const createChatBtn = document.getElementById('createChatBtn');
+        if (createChatBtn) {
+            createChatBtn.textContent = `Create Chat (${selectedCount} selected)`;
+            createChatBtn.disabled = selectedCount === 0;
+        }
+    }
+
+    // Start chat with selected users
     userList.addEventListener('click', async function(e) {
         const userItem = e.target.closest('.list-group-item');
         if (userItem) {
             const userId = userItem.dataset.userId;
+            
+            if (selectedUsers.has(userId)) {
+                selectedUsers.delete(userId);
+                userItem.classList.remove('selected');
+            } else {
+                selectedUsers.add(userId);
+                userItem.classList.add('selected');
+            }
+            updateSelectedUsers();
             try {
                 const formData = new FormData();
                 formData.append('user_id', userId);
