@@ -232,7 +232,6 @@ def logout():
 @app.route('/chat/<int:chat_id>')
 @login_required
 def view_chat(chat_id):
-    blocked = get_blocked_ids(current_user.id)
     chat_room = ChatRoom.query.get_or_404(chat_id)
     
     # Check if user is a participant in this chat
