@@ -811,5 +811,5 @@ def unblock_user_route(user_id):
     return redirect(url_for('chat'))
 
 @app.route('/cgc', strict_slashes=False)
-def group_chat_page():
+def create_group_chat():
     return render_template('creategc.html')
