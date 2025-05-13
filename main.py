@@ -4,7 +4,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
 from flask import Flask, request, abort, send_file
-from flask_wtf.csrf import CSRFProtect
 from flask import redirect
 from app import app, db
 from models import User, Message, ChatRoom, cipher_suite
@@ -64,8 +63,7 @@ logging.basicConfig(level=logging.DEBUG)
 CORS(app)
 DB_PATH = "/data/app.db"
 
-csrf = CSRFProtect()
-csrf.init_app(app)
+
 #These WP bots thinking I'm using WP are getting pretty annoying
 @app.before_request
 def block_bad_paths():
