@@ -382,25 +382,7 @@ def create_chat():
     db.session.add(chat_room)
     db.session.commit()
     
-    # Check if a chat already exists between these users
-    existing_chats = current_user.chats.all()
-    for chat in existing_chats:
-        if other_user in chat.participants and len(list(chat.participants)) == 2:
-            return jsonify({
-                'success': True,
-                'chat': chat.to_dict()
-            })
-    
-    # Create a new chat room
-    chat_name = f"Chat with {other_user.username}"
-    chat_room = ChatRoom(name=chat_name, is_private=True)
-    
-    # Add both users as participants
-    chat_room.participants.append(current_user)
-    chat_room.participants.append(other_user)
-    
-    db.session.add(chat_room)
-    db.session.commit()
+  
     
     return jsonify({
         'success': True,
