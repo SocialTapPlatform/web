@@ -219,8 +219,8 @@ chatList.addEventListener('click', async function(e) {
         }
     }
 
-    // Start chat with selected users
-    userList.addEventListener('click', async function(e) {
+    // Handle user selection
+    userList.addEventListener('click', function(e) {
         const userItem = e.target.closest('.list-group-item');
         if (userItem) {
             const userId = userItem.dataset.userId;
@@ -233,14 +233,29 @@ chatList.addEventListener('click', async function(e) {
                 userItem.classList.add('selected');
             }
             updateSelectedUsers();
-            try {
-                const formData = new FormData();
-                formData.append('user_id', userId);
-                
-                const response = await fetch('/api/chats/create', {
-                    method: 'POST',
-                    body: formData
-                });
+        }
+    });
+
+    // Handle create chat button click
+    document.getElementById('createChatBtn').addEventListener('click', async function() {
+        if (selectedUsers.size === 0) return;
+        
+        try {
+            const formData = new FormData();
+            const chatName = document.getElementById('chatNameInput').value.trim();
+            
+            selectedUsers.forEach(userId => {
+                formData.append('user_ids[]', userId);
+            });
+            
+            if (chatName) {
+                formData.append('name', chatName);
+            }
+            
+            const response = await fetch('/api/chats/create', {
+                method: 'POST',
+                body: formData
+            });
                 
                 const data = await response.json();
                 if (response.ok) {
