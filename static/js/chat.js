@@ -208,54 +208,19 @@ chatList.addEventListener('click', async function(e) {
         });
     });
 
-    let selectedUsers = new Set();
-
-    function updateSelectedUsers() {
-        const selectedCount = selectedUsers.size;
-        const createChatBtn = document.getElementById('createChatBtn');
-        if (createChatBtn) {
-            createChatBtn.textContent = `Create Chat (${selectedCount} selected)`;
-            createChatBtn.disabled = selectedCount === 0;
-        }
-    }
-
-    // Handle user selection
-    userList.addEventListener('click', function(e) {
+    // Start chat with selected user
+    userList.addEventListener('click', async function(e) {
         const userItem = e.target.closest('.list-group-item');
         if (userItem) {
             const userId = userItem.dataset.userId;
-            
-            if (selectedUsers.has(userId)) {
-                selectedUsers.delete(userId);
-                userItem.classList.remove('selected');
-            } else {
-                selectedUsers.add(userId);
-                userItem.classList.add('selected');
-            }
-            updateSelectedUsers();
-        }
-    });
-
-    // Handle create chat button click
-    document.getElementById('createChatBtn').addEventListener('click', async function() {
-        if (selectedUsers.size === 0) return;
-        
-        try {
-            const formData = new FormData();
-            const chatName = document.getElementById('chatNameInput').value.trim();
-            
-            selectedUsers.forEach(userId => {
-                formData.append('user_ids[]', userId);
-            });
-            
-            if (chatName) {
-                formData.append('name', chatName);
-            }
-            
-            const response = await fetch('/api/chats/create', {
-                method: 'POST',
-                body: formData
-            });
+            try {
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                
+                const response = await fetch('/api/chats/create', {
+                    method: 'POST',
+                    body: formData
+                });
                 
                 const data = await response.json();
                 if (response.ok) {
