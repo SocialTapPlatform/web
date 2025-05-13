@@ -250,7 +250,7 @@ def view_chat(chat_id):
                           username=current_user.username, 
                           chat_rooms=chat_rooms,
                           active_chat_id=chat_id,
-                          current_user=current_user
+                          current_user=current_user)
 
 @app.route('/messages')
 @login_required
