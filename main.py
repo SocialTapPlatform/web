@@ -74,7 +74,23 @@ def block_bad_paths():
 
 @app.errorhandler(500)
 def handle_500(e):
-    return jsonify({"error": "Internal server error"}), 500
+    if request.path.startswith("/api/"):
+        
+        return jsonify({"error": "Internal server error"}), 500
+
+    else:
+       
+        return redirect("https://http.cat/500")
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    code = getattr(e, 'code', 500)
+  
+    if request.path.startswith("/api/"):
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    else:
+        return redirect(f"https://http.cat/{code}")
 
 
 
@@ -232,6 +248,7 @@ def logout():
 @app.route('/chat/<int:chat_id>')
 @login_required
 def view_chat(chat_id):
+    blocked = get_blocked_ids(current_user.id)
     chat_room = ChatRoom.query.get_or_404(chat_id)
     
     # Check if user is a participant in this chat
@@ -250,7 +267,7 @@ def view_chat(chat_id):
                           username=current_user.username, 
                           chat_rooms=chat_rooms,
                           active_chat_id=chat_id,
-                          current_user=current_user)
+                          current_user=current_user, blocked_ids=blocked)
 
 @app.route('/messages')
 @login_required
@@ -793,6 +810,3 @@ def unblock_user_route(user_id):
     flash('User has been unblocked.', 'success')
     return redirect(url_for('chat'))
 
-@app.route('/cgc', strict_slashes=False)
-def create_group_chat():
-    return render_template('creategc.html')
