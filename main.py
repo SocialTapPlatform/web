@@ -781,7 +781,7 @@ def delete_chat(chat_id):
 
     return jsonify({"success": "Chat and all its messages have been deleted."}), 200
 
-@app.route('/apidocs')
+@app.route('/apidocs', strict_slashes=False)
 def apidocs():
     return redirect(url_for('apid.html'))
 
