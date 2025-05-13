@@ -381,10 +381,25 @@ def get_chats():
 @app.route('/api/chats/create', methods=['POST'])
 @login_required
 def create_chat():
-    user_id = request.form.get('user_id', type=int)
+    user_ids = request.form.getlist('user_ids[]')
+    chat_name = request.form.get('name')
     
-    if not user_id:
-        return jsonify({'error': 'User ID is required'}), 400
+    if not user_ids:
+        return jsonify({'error': 'At least one user ID is required'}), 400
+        
+    # Convert to integers
+    user_ids = [int(uid) for uid in user_ids]
+    
+    # For direct messages (2 people)
+    if len(user_ids) == 1:
+        other_user = User.query.get_or_404(user_ids[0])
+        chat_name = f"Chat with {other_user.username}"
+        is_group = False
+    else:
+        # For group chats
+        if not chat_name:
+            chat_name = f"Group Chat ({len(user_ids) + 1} members)"
+        is_group = True
         
     # Check if user exists
     other_user = User.query.get_or_404(user_id)
