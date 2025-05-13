@@ -122,6 +122,16 @@
     margin-left: auto;
 }
 
+.list-group-item.selected {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.list-group-item.selected:hover {
+    background-color: var(--bs-primary-dark);
+    color: white;
+}
+
 /* Admin controls */
 .admin-controls {
     display: flex;
