@@ -35,3 +35,7 @@ with app.app_context():
 # Register Google Auth Blueprint
 from google_auth import google_auth
 app.register_blueprint(google_auth)
+
+@app.route('/cgc')
+def group_chat_page():
+    return render_template('creategc.html')
