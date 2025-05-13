@@ -16,47 +16,7 @@ import time
 from flask_cors import CORS
 import sqlite3
 import json
-#to make sure that jinja doesnt give out error nightmares :)
-@app.context_processor
-def inject_blocking_utils():
-    return dict(is_blocked=is_blocked)
-
-#sussy code
-BLOCKED_USERS_FILE = "blocked_users.json"
-
-# load the people the user doesnt like
-def load_blocked_users():
-    if not os.path.exists(BLOCKED_USERS_FILE):
-        return {}
-    with open(BLOCKED_USERS_FILE, "r") as f:
-        return json.load(f)
-
-# save blocked users if user hates more people
-def save_blocked_users(data):
-    with open(BLOCKED_USERS_FILE, "w") as f:
-        json.dump(data, f)
-
-# do some funky stuff
-def is_blocked(viewer_id, sender_id):
-    data = load_blocked_users()
-    blocked_list = data.get(str(viewer_id), [])
-    return str(sender_id) in blocked_list
-
-# Block a user
-def block_user(viewer_id, sender_id):
-    data = load_blocked_users()
-    if str(viewer_id) not in data:
-        data[str(viewer_id)] = []
-    if str(sender_id) not in data[str(viewer_id)]:
-        data[str(viewer_id)].append(str(sender_id))
-        save_blocked_users(data)
-
-# Unblock a user
-def unblock_user(viewer_id, sender_id):
-    data = load_blocked_users()
-    if str(viewer_id) in data and str(sender_id) in data[str(viewer_id)]:
-        data[str(viewer_id)].remove(str(sender_id))
-        save_blocked_users(data)
+# App configuration and imports
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -72,9 +32,25 @@ def block_bad_paths():
         return '', 204
 
 
+@app.errorhandler(500)
+def handle_500(e):
+    if request.path.startswith("/api/"):
+        
+        return jsonify({"error": "Internal server error"}), 500
+
+    else:
+       
+        return redirect("https://http.cat/500")
 
 
-
+@app.errorhandler(Exception)
+def handle_exception(e):
+    code = getattr(e, 'code', 500)
+  
+    if request.path.startswith("/api/"):
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    else:
+        return redirect(f"https://http.cat/{code}")
 
 
 
@@ -232,7 +208,6 @@ def logout():
 @app.route('/chat/<int:chat_id>')
 @login_required
 def view_chat(chat_id):
-    blocked = get_blocked_ids(current_user.id)
     chat_room = ChatRoom.query.get_or_404(chat_id)
     
     # Check if user is a participant in this chat
@@ -251,7 +226,7 @@ def view_chat(chat_id):
                           username=current_user.username, 
                           chat_rooms=chat_rooms,
                           active_chat_id=chat_id,
-                          current_user=current_user, blocked_ids=blocked)
+                          current_user=current_user)
 
 @app.route('/messages')
 @login_required
@@ -795,18 +770,6 @@ def change_username():
 
     return redirect(url_for('admin'))
 
-@app.route('/block/<int:user_id>', methods=['POST'])
-@login_required
-def block_user_route(user_id):
-    block_user(current_user.id, user_id)
-    flash('User has been blocked.', 'success')
-    return redirect(url_for('chat'))
-
-@app.route('/unblock/<int:user_id>', methods=['POST'])
-@login_required
-def unblock_user_route(user_id):
-    unblock_user(current_user.id, user_id)
-    flash('User has been unblocked.', 'success')
-    return redirect(url_for('chat'))
+# End of routes
 
 
