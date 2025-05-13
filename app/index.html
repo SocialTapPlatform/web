@@ -37,10 +37,19 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
+                            <input type="text" class="form-control" id="chatNameInput" 
+                                   placeholder="Group chat name (optional)">
+                        </div>
+                        <div class="mb-3">
                             <input type="text" class="form-control" id="userSearchInput" 
                                    placeholder="Search users...">
                         </div>
                         <div id="userList" class="list-group">
+                        </div>
+                        <div class="mt-3">
+                            <button id="createChatBtn" class="btn btn-primary w-100" disabled>
+                                Create Chat (0 selected)
+                            </button>
                             <div class="text-center text-muted p-3">
                                 <small>Loading users...</small>
                             </div>
