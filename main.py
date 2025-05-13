@@ -63,6 +63,8 @@ logging.basicConfig(level=logging.DEBUG)
 CORS(app)
 DB_PATH = "/data/app.db"
 
+csrf = CSRFProtect()
+csrf.init_app(app)
 #These WP bots thinking I'm using WP are getting pretty annoying
 @app.before_request
 def block_bad_paths():
