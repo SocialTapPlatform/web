@@ -388,16 +388,16 @@ def create_chat():
     if not user_ids or not isinstance(user_ids, list):
         return jsonify({'error': 'User IDs are required'}), 400
 
-    # Always include current user
+    # cu
     if current_user.id not in user_ids:
         user_ids.append(current_user.id)
 
-    # Validate all users exist
+    # all users must be alive
     users = User.query.filter(User.id.in_(user_ids)).all()
     if len(users) != len(user_ids):
         return jsonify({'error': 'One or more user IDs are invalid'}), 400
 
-    # Handle DM case (only 2 participants total)
+    # dm stuff
     if len(user_ids) == 2:
         other_user_id = next(uid for uid in user_ids if uid != current_user.id)
         existing_chats = current_user.chats.all()
@@ -418,13 +418,14 @@ def create_chat():
     if not chat_name:
         return jsonify({'error': 'Group chat name is required'}), 400
 
-    chat_room = ChatRoom(name=chat_name, is_private=False)  # is_private = False for group
+    chat_room = ChatRoom(name=chat_name, is_private=False) 
     chat_room.participants.extend(users)
 
     db.session.add(chat_room)
     db.session.commit()
 
-    return jsonify({'success': True, 'chat': chat_room.to_dict()})    db.session.commit()
+    return jsonify({'success': True, 'chat': chat_room.to_dict()})  
+    db.session.commit()
     
     return jsonify({
         'success': True,
