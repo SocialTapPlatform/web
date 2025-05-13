@@ -75,26 +75,6 @@ def block_bad_paths():
         return '', 204
 
 
-@app.errorhandler(500)
-def handle_500(e):
-    if request.path.startswith("/api/"):
-        
-        return jsonify({"error": "Internal server error"}), 500
-
-    else:
-       
-        return redirect("https://http.cat/500")
-
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    code = getattr(e, 'code', 500)
-  
-    if request.path.startswith("/api/"):
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-    else:
-        return redirect(f"https://http.cat/{code}")
-
 
 
 # Load blacklist words
