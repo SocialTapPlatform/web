@@ -357,14 +357,7 @@ def create_chat():
     # For direct messages (2 people)
     if len(user_ids) == 1:
         other_user = users[0]
-        # Check if a direct chat already exists
-        existing_chats = current_user.chats.all()
-        for chat in existing_chats:
-            if other_user in chat.participants and len(list(chat.participants)) == 2:
-                return jsonify({
-                    'success': True,
-                    'chat': chat.to_dict()
-                })
+    
         chat_name = f"Chat with {other_user.username}"
     else:
         # For group chats
@@ -377,17 +370,16 @@ def create_chat():
     
     # Add all selected users
     for user in users:
-        chat_room.participants.append(user)
-    
+         chat_room.participants.append(user)
+        
     db.session.add(chat_room)
     db.session.commit()
-    
-  
     
     return jsonify({
         'success': True,
         'chat': chat_room.to_dict()
     })
+    
 
 @app.route('/api/user/offline', methods=['POST'])
 @login_required
