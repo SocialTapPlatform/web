@@ -36,6 +36,70 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                      <!--sussy mcwussy-->
+<div class="mb-3">
+  <label for="chatName" class="form-label">Group Chat Name</label>
+  <input type="text" class="form-control" id="chatName" placeholder="Enter a name">
+</div>
+<div class="mb-3">
+  <label class="form-label">Select Users</label>
+  <div id="userCheckboxList" class="list-group" style="max-height: 200px; overflow-y: auto;">
+    <div class="text-center text-muted p-3">
+      <small>Loading users...</small>
+    </div>
+  </div>
+</div>
+<div class="d-grid gap-2">
+  <button class="btn btn-primary" id="createGroupChatBtn">Create Group Chat</button>
+</div>
+
+<script>
+// Fetch and display user list for selection
+function loadUserCheckboxes() {
+  fetch('/api/users')
+    .then(response => response.json())
+    .then(users => {
+      const list = document.getElementById('userCheckboxList');
+      list.innerHTML = '';
+      users.forEach(user => {
+        const item = document.createElement('label');
+        item.className = 'list-group-item';
+        item.innerHTML = `
+          <input class="form-check-input me-1" type="checkbox" value="${user.id}" data-username="${user.username}">
+          ${user.username}
+        `;
+        list.appendChild(item);
+      });
+    });
+}
+
+document.getElementById('newChatModal').addEventListener('shown.bs.modal', loadUserCheckboxes);
+
+document.getElementById('createGroupChatBtn').addEventListener('click', () => {
+  const name = document.getElementById('chatName').value.trim();
+  const checkboxes = document.querySelectorAll('#userCheckboxList input:checked');
+  const user_ids = Array.from(checkboxes).map(cb => cb.value);
+
+  if (!name || user_ids.length === 0) {
+    alert('Please enter a name and select at least one user.');
+    return;
+  }
+
+  fetch('/api/chats/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, user_ids })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.error || 'Error creating chat.');
+      }
+    });
+});
+</script>
                         <div class="mb-3">
                             <input type="text" class="form-control" id="userSearchInput" 
                                    placeholder="Search users...">
