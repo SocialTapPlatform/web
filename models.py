@@ -77,7 +77,6 @@ class ChatRoom(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     is_private = db.Column(db.Boolean, default=True)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     messages = db.relationship('Message', backref='chat_room', lazy='dynamic')
     
