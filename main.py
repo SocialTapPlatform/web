@@ -177,7 +177,6 @@ def login():
     return render_template('login.html', form=form)
 
 app.route('/api/login', methods=['POST'])
-@csrf.exempt 
 def api_login():
     data = request.get_json() or request.form  # supports JSON or form-encoded
     email = data.get('username') or data.get('email') 
