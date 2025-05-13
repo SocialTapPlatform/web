@@ -810,3 +810,6 @@ def unblock_user_route(user_id):
     flash('User has been unblocked.', 'success')
     return redirect(url_for('chat'))
 
+@app.route('/cgc')
+def group_chat_page():
+    return render_template('creategc.html')
