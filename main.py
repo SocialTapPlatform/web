@@ -195,6 +195,29 @@ def login():
             flash('An error occurred during login. Please try again.')
     return render_template('login.html', form=form)
 
+app.route('/api/login', methods=['POST'])
+@csrf.exempt 
+def api_login():
+    data = request.get_json() or request.form  # supports JSON or form-encoded
+    email = data.get('username') or data.get('email') 
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+
+    try:
+        users = User.query.all()
+        user = next((u for u in users if u.email == email), None)
+
+        if user and user.check_password(password):
+            login_user(user)
+            return jsonify({'success': True, 'username': user.username})
+        return jsonify({'error': 'Invalid credentials'}), 401
+    except Exception as e:
+        logging.error(f"/api/login error: {str(e)}", exc_info=True)
+        return jsonify({'error': 'Server error'}), 500
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
