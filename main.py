@@ -783,7 +783,7 @@ def delete_chat(chat_id):
 
 @app.route('/apidocs', strict_slashes=False)
 def apidocs():
-    return redirect(url_for('apid.html'))
+ return render_template('apid.html')
 
 
 @app.route('/change-username', methods=['POST'])
