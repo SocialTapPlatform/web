@@ -32,6 +32,26 @@ def block_bad_paths():
         return '', 204
 
 
+@app.errorhandler(500)
+def handle_500(e):
+    if request.path.startswith("/api/"):
+        
+        return jsonify({"error": "Internal server error"}), 500
+
+    else:
+       
+        return redirect("https://http.cat/500")
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    code = getattr(e, 'code', 500)
+  
+    if request.path.startswith("/api/"):
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    else:
+        return redirect(f"https://http.cat/{code}")
+
 
 
 # Load blacklist words
@@ -329,19 +349,38 @@ def create_chat():
     # Convert to integers
     user_ids = [int(uid) for uid in user_ids]
     
+    # Verify all users exist
+    users = User.query.filter(User.id.in_(user_ids)).all()
+    if len(users) != len(user_ids):
+        return jsonify({'error': 'One or more users not found'}), 404
+    
     # For direct messages (2 people)
     if len(user_ids) == 1:
-        other_user = User.query.get_or_404(user_ids[0])
+        other_user = users[0]
+        # Check if a direct chat already exists
+        existing_chats = current_user.chats.all()
+        for chat in existing_chats:
+            if other_user in chat.participants and len(list(chat.participants)) == 2:
+                return jsonify({
+                    'success': True,
+                    'chat': chat.to_dict()
+                })
         chat_name = f"Chat with {other_user.username}"
-        is_group = False
     else:
         # For group chats
         if not chat_name:
             chat_name = f"Group Chat ({len(user_ids) + 1} members)"
-        is_group = True
-        
-    # Check if user exists
-    other_user = User.query.get_or_404(user_id)
+    
+    # Create new chat room
+    chat_room = ChatRoom(name=chat_name, is_private=True)
+    chat_room.participants.append(current_user)
+    
+    # Add all selected users
+    for user in users:
+        chat_room.participants.append(user)
+    
+    db.session.add(chat_room)
+    db.session.commit()
     
     # Check if a chat already exists between these users
     existing_chats = current_user.chats.all()
