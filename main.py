@@ -73,13 +73,10 @@ def block_bad_paths():
 
 
 @app.errorhandler(500)
-def handle_500(e):
-    if request.path.startswith("/api/"):
-        
+ def handle_500(e):
+     if request.path.startswith("/api/"):
         return jsonify({"error": "Internal server error"}), 500
-
     else:
-       
         return redirect("https://http.cat/500")
 
 
