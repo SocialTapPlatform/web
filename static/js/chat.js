@@ -404,8 +404,6 @@ async function fetchMessages() {
         }
     }
 
-const renderedMessageIds = new Set();
-
 function updateMessages(messages) {
     const wasAtBottom = isAtBottom();
     messageContainer.innerHTML = '';
@@ -421,12 +419,16 @@ function updateMessages(messages) {
 
     messages.forEach(message => {
         const messageElement = createMessageElement(message);
-        messageContainer.appendChild(messageElement);
+        
+        // Add animation class
+        messageElement.classList.add('pop-in');
 
-        // Add the "new-message" class to the newly added message to trigger animation
-        setTimeout(() => {
-            messageElement.classList.add('new-message');
-        }, 10); // Delay for applying animation, allowing it to be visible
+        // Remove the class after animation ends to prevent repeat animation
+        messageElement.addEventListener('animationend', () => {
+            messageElement.classList.remove('pop-in');
+        });
+
+        messageContainer.appendChild(messageElement);
     });
 
     if (wasAtBottom) {
