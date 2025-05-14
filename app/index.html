@@ -258,8 +258,11 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
             Sound: <span id="soundStatus">On</span>
           </button>
           <!-- Animation Toggle -->
-         <button id="animationToggle" aria-pressed="false">Disable Animations</button>
-<span>Animations Disabled: <span id="animationStatus">No</span></span>
+      <label class="switch">
+  <input type="checkbox" id="animations-toggle">
+  <span class="slider"></span>
+  <span class="label-text">Disable Animations</span>
+</label>
         </div>
       </div>
     </div>
