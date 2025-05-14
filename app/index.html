@@ -185,10 +185,12 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
                                 <i class="bi bi-box-arrow-right"></i> Logout
               
                             </a>
-                         <!-- Control Panel Button -->
+
+<!-- Control Panel Button -->
 <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#controlPanelModal">
   <i class="bi bi-sliders"></i> Control Panel
 </button>
+                        </div>
                     </div>
              <div class="card-body chat-messages" id="messageContainer">
   {% for message in messages %}
@@ -241,7 +243,7 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
             <p class="text-muted small mb-0">&copy; 2025 SocialTap. All rights reserved, protected by the </p><a href="https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt" class="text-decoration-none text-muted">Mozilla Public License 2</a>
         </div>
     </div>
-<!-- Control Panel Modal -->
+<!-- Add this to the bottom of the HTML, just before the closing </body> tag -->
 <div class="modal fade" id="controlPanelModal" tabindex="-1" aria-labelledby="controlPanelLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -256,9 +258,8 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
             Sound: <span id="soundStatus">On</span>
           </button>
           <!-- Animation Toggle -->
-          <button id="toggle-animations" class="btn btn-outline-secondary">
-            Disable Animations
-          </button>
+         <button id="animationToggle" aria-pressed="false">Disable Animations</button>
+<span>Animations Disabled: <span id="animationStatus">No</span></span>
         </div>
       </div>
     </div>
@@ -327,49 +328,45 @@ toggleBtn.addEventListener('click', () => {
   soundStatus.textContent = soundEnabled === 'true' ? 'On' : 'Off';
 });
     </script>
-      <script>
+
         <script>
-  // Sound toggle logic
-  const notificationSound = new Audio('/static/sounds/notification.mp3');
-  let soundEnabled = localStorage.getItem('soundEnabled');
-  if (soundEnabled === null) soundEnabled = 'true';
-  localStorage.setItem('soundEnabled', soundEnabled);
+  document.addEventListener('DOMContentLoaded', () => {
+    const animationToggle = document.getElementById('animationToggle');
+    const animationStatus = document.getElementById('animationStatus');
 
-  const toggleBtn = document.getElementById('soundToggle');
-  const soundStatus = document.getElementById('soundStatus');
+    // Load saved setting
+    const animationsDisabled = localStorage.getItem('animationsDisabled') === 'true';
+    if (animationsDisabled) {
+      document.body.classList.add('no-animations');
+      animationStatus.textContent = 'Yes';
+      animationToggle.setAttribute('aria-pressed', 'true');
+      animationToggle.textContent = 'Enable Animations';
+    } else {
+      animationStatus.textContent = 'No';
+      animationToggle.setAttribute('aria-pressed', 'false');
+      animationToggle.textContent = 'Disable Animations';
+    }
 
-  function updateSoundButton() {
-    soundStatus.textContent = soundEnabled === 'true' ? 'On' : 'Off';
-  }
+    // Toggle animation setting
+    animationToggle.addEventListener('click', () => {
+      const isPressed = animationToggle.getAttribute('aria-pressed') === 'true';
+      const newStatus = !isPressed;
 
-  toggleBtn.addEventListener('click', () => {
-    soundEnabled = soundEnabled === 'true' ? 'false' : 'true';
-    localStorage.setItem('soundEnabled', soundEnabled);
-    updateSoundButton();
+      animationToggle.setAttribute('aria-pressed', String(newStatus));
+      animationStatus.textContent = newStatus ? 'Yes' : 'No';
+      localStorage.setItem('animationsDisabled', newStatus);
+
+      if (newStatus) {
+        document.body.classList.add('no-animations');
+        animationToggle.textContent = 'Enable Animations';
+      } else {
+        document.body.classList.remove('no-animations');
+        animationToggle.textContent = 'Disable Animations';
+      }
+    });
   });
-
-  updateSoundButton();
-
-  // Animation toggle logic
-  const animationBtn = document.getElementById('toggle-animations');
-  let animationsEnabled = localStorage.getItem('animationsEnabled');
-  if (animationsEnabled === null) animationsEnabled = 'true';
-  localStorage.setItem('animationsEnabled', animationsEnabled);
-
-  function updateAnimationButton() {
-    animationBtn.textContent = animationsEnabled === 'true' ? 'Disable Animations' : 'Enable Animations';
-    document.body.classList.toggle('no-animations', animationsEnabled === 'false');
-  }
-
-  animationBtn.addEventListener('click', () => {
-    animationsEnabled = animationsEnabled === 'true' ? 'false' : 'true';
-    localStorage.setItem('animationsEnabled', animationsEnabled);
-    updateAnimationButton();
-  });
-
-  updateAnimationButton();
 </script>
- 
+      
     </footer>
 
 
