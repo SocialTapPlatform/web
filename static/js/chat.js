@@ -405,23 +405,12 @@ async function fetchMessages() {
     }
 let lastSeenMessageIds = new Set();
 let isFirstLoad = true;
-let animationsEnabled = localStorage.getItem('animationsEnabled') !== 'false';
-
-const toggleBtn = document.getElementById('toggle-animations');
-if (toggleBtn) {
-    toggleBtn.textContent = animationsEnabled ? 'Disable Animations' : 'Enable Animations';
-    toggleBtn.addEventListener('click', () => {
-        animationsEnabled = !animationsEnabled;
-        localStorage.setItem('animationsEnabled', animationsEnabled);
-        toggleBtn.textContent = animationsEnabled ? 'Disable Animations' : 'Enable Animations';
-    });
-}
 
 function updateMessages(messages) {
     const wasAtBottom = isAtBottom();
     const newIds = new Set(messages.map(m => m.id));
 
-    // Remove messages no longer present
+    // Remove messages that are no longer present
     lastSeenMessageIds.forEach(id => {
         if (!newIds.has(id)) lastSeenMessageIds.delete(id);
     });
@@ -439,8 +428,7 @@ function updateMessages(messages) {
 
     messages.forEach(message => {
         const isNew = !lastSeenMessageIds.has(message.id);
-        const shouldAnimate = (isFirstLoad || isNew) && animationsEnabled;
-        const messageElement = createMessageElement(message, shouldAnimate);
+        const messageElement = createMessageElement(message, isFirstLoad || isNew);
         messageContainer.appendChild(messageElement);
         lastSeenMessageIds.add(message.id);
     });
@@ -453,9 +441,12 @@ function createMessageElement(message, animate = false) {
     const div = document.createElement('div');
     const isOwnMessage = message.username === currentUsername.textContent;
     div.className = `message ${isOwnMessage ? 'own' : 'other'}`;
-    div.dataset.messageId = message.id;
 
-    if (animate) div.classList.add('pop-in');
+    if (animate) {
+        div.classList.add('pop-in');
+    }
+
+    div.dataset.messageId = message.id;
 
     const isAdmin = document.body.dataset.isAdmin?.toLowerCase() === 'true';
     const adminControls = isAdmin ? `
@@ -478,6 +469,7 @@ function createMessageElement(message, animate = false) {
 
     return div;
 }
+
     function isAtBottom() {
         const threshold = 100;
         return (messageContainer.scrollHeight - messageContainer.scrollTop - messageContainer.clientHeight) < threshold;
