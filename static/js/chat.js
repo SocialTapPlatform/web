@@ -404,58 +404,67 @@ async function fetchMessages() {
         }
     }
 
-    function updateMessages(messages) {
-        const wasAtBottom = isAtBottom();
-        messageContainer.innerHTML = '';
+function updateMessages(messages) {
+    const wasAtBottom = isAtBottom();
+    messageContainer.innerHTML = '';
 
-        if (messages.length === 0) {
-            messageContainer.innerHTML = `
-                <div class="text-center text-muted mb-3">
-                    <small>No messages yet. Be the first to send a message!</small>
-                </div>
-            `;
-            return;
-        }
+    if (messages.length === 0) {
+        messageContainer.innerHTML = `
+            <div class="text-center text-muted mb-3">
+                <small>No messages yet. Be the first to send a message!</small>
+            </div>
+        `;
+        return;
+    }
 
-        messages.forEach(message => {
-            const messageElement = createMessageElement(message);
-            messageContainer.appendChild(messageElement);
+    messages.forEach(message => {
+        const messageElement = createMessageElement(message);
+        
+        // Add animation class
+        messageElement.classList.add('pop-in');
+
+        // Remove the class after animation ends to prevent repeat animation
+        messageElement.addEventListener('animationend', () => {
+            messageElement.classList.remove('pop-in');
         });
 
-        if (wasAtBottom) {
-            scrollToBottom();
-        }
+        messageContainer.appendChild(messageElement);
+    });
+
+    if (wasAtBottom) {
+        scrollToBottom();
     }
+}
 
-    function createMessageElement(message) {
-        const div = document.createElement('div');
-        const isOwnMessage = message.username === currentUsername.textContent;
-        div.className = `message ${isOwnMessage ? 'own' : 'other'}`;
-        div.dataset.messageId = message.id;
+function createMessageElement(message) {
+    const div = document.createElement('div');
+    const isOwnMessage = message.username === currentUsername.textContent;
+    div.className = `message ${isOwnMessage ? 'own' : 'other'}`;
+    div.dataset.messageId = message.id;
 
-        // Check if admin controls should be shown
-        const isAdmin = document.body.dataset.isAdmin.toLowerCase() === 'true';
-        const adminControls = isAdmin ? 
-            `<div class="admin-controls">
-                <button class="btn btn-sm btn-danger delete-message" 
-                        onclick="deleteMessage(${message.id}, event)">
-                    <i class="bi bi-trash"></i> Delete Message
-                </button>
-            </div>` : '';
+    // Check if admin controls should be shown
+    const isAdmin = document.body.dataset.isAdmin.toLowerCase() === 'true';
+    const adminControls = isAdmin ? 
+        `<div class="admin-controls">
+            <button class="btn btn-sm btn-danger delete-message" 
+                    onclick="deleteMessage(${message.id}, event)">
+                <i class="bi bi-trash"></i> Delete Message
+            </button>
+        </div>` : '';
 
-        div.innerHTML = `
-            <div class="message-bubble">
-                ${!isOwnMessage ? `<div class="message-username">${message.username}</div>` : ''}
-                ${message.content}
-            </div>
-            <div class="message-meta">
-                <span class="message-author">${message.username}</span> • ${message.timestamp}
-            </div>
-            ${adminControls}
-        `;
+    div.innerHTML = `
+        <div class="message-bubble">
+            ${!isOwnMessage ? `<div class="message-username">${message.username}</div>` : ''}
+            ${message.content}
+        </div>
+        <div class="message-meta">
+            <span class="message-author">${message.username}</span> • ${message.timestamp}
+        </div>
+        ${adminControls}
+    `;
 
-        return div;
-    }
+    return div;
+}
 
     function isAtBottom() {
         const threshold = 100;
