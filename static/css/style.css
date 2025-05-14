@@ -185,3 +185,50 @@ html, body {
 .card-body {
     background-color: #0a0a0a !important;
 }
+/* Set the background color to black for the entire page */
+body {
+    background-color: #000 !important;
+    color: white !important; /* Ensure text is visible against the black background */
+}
+
+/* Set the card background to black */
+.card {
+    background-color: #000 !important;
+    border-color: #444; /* Optional: darker border to differentiate card edges */
+}
+
+/* Keep message background normal (i.e., chat messages remain as they are) */
+.card-body.chat-messages {
+    background-color: transparent !important;
+    color: white !important;
+}
+
+/* Keep the buttons' default color */
+.btn {
+    background-color: #0071e3 !important;
+    color: white !important;
+}
+
+/* Ensure text in the sidebar and modal stays white */
+.sidebar-card, .modal-content {
+    background-color: #000 !important;
+    color: white !important;
+}
+
+/* Keep the modal input fields visible */
+.form-control {
+    background-color: #333 !important;
+    color: white !important;
+    border: 1px solid #444 !important;
+}
+
+
+footer {
+    background-color: #000 !important;
+    color: white !important;
+}
+
+/* Customize the footer links */
+footer a {
+    color: #0071e3 !important;
+}
