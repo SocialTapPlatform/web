@@ -408,8 +408,6 @@ const renderedMessageIds = new Set();
 
 function updateMessages(messages) {
     const wasAtBottom = isAtBottom();
-    
-    // Clear container, but keep track of existing messages
     messageContainer.innerHTML = '';
 
     if (messages.length === 0) {
@@ -422,11 +420,13 @@ function updateMessages(messages) {
     }
 
     messages.forEach(message => {
-        const isNew = !renderedMessageIds.has(message.id);
-        const messageElement = createMessageElement(message, isNew);
-
-        renderedMessageIds.add(message.id);
+        const messageElement = createMessageElement(message);
         messageContainer.appendChild(messageElement);
+
+        // Add the "new-message" class to the newly added message to trigger animation
+        setTimeout(() => {
+            messageElement.classList.add('new-message');
+        }, 10); // Delay for applying animation, allowing it to be visible
     });
 
     if (wasAtBottom) {
@@ -434,18 +434,11 @@ function updateMessages(messages) {
     }
 }
 
-function createMessageElement(message, isNew) {
+function createMessageElement(message) {
     const div = document.createElement('div');
     const isOwnMessage = message.username === currentUsername.textContent;
     div.className = `message ${isOwnMessage ? 'own' : 'other'}`;
     div.dataset.messageId = message.id;
-
-    if (isNew) {
-        div.classList.add('pop-in');
-        div.addEventListener('animationend', () => {
-            div.classList.remove('pop-in');
-        });
-    }
 
     // Check if admin controls should be shown
     const isAdmin = document.body.dataset.isAdmin.toLowerCase() === 'true';
