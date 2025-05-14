@@ -185,11 +185,10 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
                                 <i class="bi bi-box-arrow-right"></i> Logout
               
                             </a>
-                          <button id="soundToggle" class="btn btn-sm btn-outline-secondary">
-  Sound: <span id="soundStatus">On</span>
+                         <!-- Control Panel Button -->
+<button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#controlPanelModal">
+  <i class="bi bi-sliders"></i> Control Panel
 </button>
-                          <button id="toggle-animations" class="btn btn-sm">Disable Animations</button>
-                        </div>
                     </div>
              <div class="card-body chat-messages" id="messageContainer">
   {% for message in messages %}
@@ -242,7 +241,29 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
             <p class="text-muted small mb-0">&copy; 2025 SocialTap. All rights reserved, protected by the </p><a href="https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt" class="text-decoration-none text-muted">Mozilla Public License 2</a>
         </div>
     </div>
-
+<!-- Control Panel Modal -->
+<div class="modal fade" id="controlPanelModal" tabindex="-1" aria-labelledby="controlPanelLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="controlPanelLabel">Control Panel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-grid gap-2">
+          <!-- Sound Toggle -->
+          <button id="soundToggle" class="btn btn-outline-secondary">
+            Sound: <span id="soundStatus">On</span>
+          </button>
+          <!-- Animation Toggle -->
+          <button id="toggle-animations" class="btn btn-outline-secondary">
+            Disable Animations
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
  <script>
@@ -306,6 +327,49 @@ toggleBtn.addEventListener('click', () => {
   soundStatus.textContent = soundEnabled === 'true' ? 'On' : 'Off';
 });
     </script>
+      <script>
+        <script>
+  // Sound toggle logic
+  const notificationSound = new Audio('/static/sounds/notification.mp3');
+  let soundEnabled = localStorage.getItem('soundEnabled');
+  if (soundEnabled === null) soundEnabled = 'true';
+  localStorage.setItem('soundEnabled', soundEnabled);
+
+  const toggleBtn = document.getElementById('soundToggle');
+  const soundStatus = document.getElementById('soundStatus');
+
+  function updateSoundButton() {
+    soundStatus.textContent = soundEnabled === 'true' ? 'On' : 'Off';
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    soundEnabled = soundEnabled === 'true' ? 'false' : 'true';
+    localStorage.setItem('soundEnabled', soundEnabled);
+    updateSoundButton();
+  });
+
+  updateSoundButton();
+
+  // Animation toggle logic
+  const animationBtn = document.getElementById('toggle-animations');
+  let animationsEnabled = localStorage.getItem('animationsEnabled');
+  if (animationsEnabled === null) animationsEnabled = 'true';
+  localStorage.setItem('animationsEnabled', animationsEnabled);
+
+  function updateAnimationButton() {
+    animationBtn.textContent = animationsEnabled === 'true' ? 'Disable Animations' : 'Enable Animations';
+    document.body.classList.toggle('no-animations', animationsEnabled === 'false');
+  }
+
+  animationBtn.addEventListener('click', () => {
+    animationsEnabled = animationsEnabled === 'true' ? 'false' : 'true';
+    localStorage.setItem('animationsEnabled', animationsEnabled);
+    updateAnimationButton();
+  });
+
+  updateAnimationButton();
+</script>
+ 
     </footer>
 
 
