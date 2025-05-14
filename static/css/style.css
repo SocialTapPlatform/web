@@ -246,11 +246,7 @@ footer a {
     opacity: 1;
   }
 }
-.no-animations * {
-  animation: none !important;
-  transition: none !important;
-  scroll-behavior: auto !important;
-}
+
 .pop-in {
   animation: popIn 0.13s ease-out;
 }
