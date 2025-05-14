@@ -203,11 +203,7 @@ body {
     color: white !important;
 }
 
-/* Keep the buttons' default color */
-.btn {
-    background-color: #0071e3 !important;
-    color: white !important;
-}
+
 
 /* Ensure text in the sidebar and modal stays white */
 .sidebar-card, .modal-content {
