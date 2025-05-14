@@ -332,12 +332,12 @@ toggleBtn.addEventListener('click', () => {
 });
     </script>
 
-        <script>
+   <script>
   document.addEventListener('DOMContentLoaded', () => {
     const animationToggle = document.getElementById('animationToggle');
     const animationStatus = document.getElementById('animationStatus');
 
-    // Load saved setting
+    // Load saved setting from localStorage
     const animationsDisabled = localStorage.getItem('animationsDisabled') === 'true';
     if (animationsDisabled) {
       document.body.classList.add('no-animations');
@@ -350,15 +350,17 @@ toggleBtn.addEventListener('click', () => {
       animationToggle.textContent = 'Disable Animations';
     }
 
-    // Toggle animation setting
+    // Toggle animation setting on button click
     animationToggle.addEventListener('click', () => {
       const isPressed = animationToggle.getAttribute('aria-pressed') === 'true';
       const newStatus = !isPressed;
 
+      // Set new toggle state in aria and update button text
       animationToggle.setAttribute('aria-pressed', String(newStatus));
       animationStatus.textContent = newStatus ? 'Yes' : 'No';
-      localStorage.setItem('animationsDisabled', newStatus);
+      localStorage.setItem('animationsDisabled', String(newStatus));
 
+      // Apply or remove the 'no-animations' class
       if (newStatus) {
         document.body.classList.add('no-animations');
         animationToggle.textContent = 'Enable Animations';
