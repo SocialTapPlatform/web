@@ -228,3 +228,8 @@ footer {
 footer a {
     color: #0071e3 !important;
 }
+
+#chatList .list-group-item {
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+}
