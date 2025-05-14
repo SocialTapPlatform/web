@@ -403,42 +403,18 @@ async function fetchMessages() {
             `;
         }
     }
+let lastSeenMessageIds = new Set();
+let isFirstLoad = true;
+
 function updateMessages(messages) {
     const wasAtBottom = isAtBottom();
-    messageContainer.innerHTML = ''; // Clear the container before updating
+    const newIds = new Set(messages.map(m => m.id));
 
-    if (messages.length === 0) {
-        messageContainer.innerHTML = `
-            <div class="text-center text-muted mb-3">
-                <small>No messages yet. Be the first to send a message!</small>
-            </div>
-        `;
-        return;
-    }
-
-    // Loop through each message and append it to the container
-    messages.forEach((message) => {
-        const messageElement = createMessageElement(message);
-        messageContainer.appendChild(messageElement);
-
-        // Trigger the animation only for the newly added message
-        setTimeout(() => {
-            messageElement.classList.add('new-message');
-        }, 10); // Use a small delay to ensure animation triggers
+    // Remove messages that are no longer present
+    lastSeenMessageIds.forEach(id => {
+        if (!newIds.has(id)) lastSeenMessageIds.delete(id);
     });
 
-    // Scroll to the bottom if the user was at the bottom of the chat
-    if (wasAtBottom) {
-        scrollToBottom();
-    }
-}
-
-const renderedMessageIds = new Set();
-
-function updateMessages(messages) {
-    const wasAtBottom = isAtBottom();
-    
-    // Clear container, but keep track of existing messages
     messageContainer.innerHTML = '';
 
     if (messages.length === 0) {
@@ -451,37 +427,31 @@ function updateMessages(messages) {
     }
 
     messages.forEach(message => {
-        const isNew = !renderedMessageIds.has(message.id);
-        const messageElement = createMessageElement(message, isNew);
-
-        renderedMessageIds.add(message.id);
+        const isNew = !lastSeenMessageIds.has(message.id);
+        const messageElement = createMessageElement(message, isFirstLoad || isNew);
         messageContainer.appendChild(messageElement);
+        lastSeenMessageIds.add(message.id);
     });
 
-    if (wasAtBottom) {
-        scrollToBottom();
-    }
+    if (wasAtBottom) scrollToBottom();
+    isFirstLoad = false;
 }
 
-function createMessageElement(message, isNew) {
+function createMessageElement(message, animate = false) {
     const div = document.createElement('div');
     const isOwnMessage = message.username === currentUsername.textContent;
     div.className = `message ${isOwnMessage ? 'own' : 'other'}`;
+
+    if (animate) {
+        div.classList.add('pop-in');
+    }
+
     div.dataset.messageId = message.id;
 
-    if (isNew) {
-        div.classList.add('pop-in');
-        div.addEventListener('animationend', () => {
-            div.classList.remove('pop-in');
-        });
-    }
-//endofmsgan
-    // Check if admin controls should be shown
-    const isAdmin = document.body.dataset.isAdmin.toLowerCase() === 'true';
-    const adminControls = isAdmin ? 
-        `<div class="admin-controls">
-            <button class="btn btn-sm btn-danger delete-message" 
-                    onclick="deleteMessage(${message.id}, event)">
+    const isAdmin = document.body.dataset.isAdmin?.toLowerCase() === 'true';
+    const adminControls = isAdmin ? `
+        <div class="admin-controls">
+            <button class="btn btn-sm btn-danger delete-message" onclick="deleteMessage(${message.id}, event)">
                 <i class="bi bi-trash"></i> Delete Message
             </button>
         </div>` : '';
