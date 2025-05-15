@@ -306,11 +306,13 @@ toggleBtn.addEventListener('click', () => {
 });
     </script>
     </footer>
-
-
-<div id="epilepsyWarning" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); color: white; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 1.5em; text-align: center;">
+<div id="epilepsyWarning" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); color: white; z-index: 9999; align-items: center; justify-content: center; flex-direction: column; font-size: 1.5em; text-align: center;">
   <p>Epilepsy Warning!</p>
-  <button id="cancelEffectBtn" style="font-size: 1.2em; padding: 1em; margin-top: 1em;">Click now if you are sensitive to epilepsy (<span id="countdown">4</span>)</button>
+  <p>This effect may cause discomfort or seizures.</p>
+  <button id="cancelEffectBtn" style="font-size: 1.2em; padding: 1em; margin-top: 1em;">
+    Click now if you are sensitive to epilepsy (<span id="countdown">4</span>)
+  </button>
+</div>
 </div>
 </body>
 </html>
