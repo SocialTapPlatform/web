@@ -542,3 +542,38 @@ async function deleteChat(chatId) {
         alert('Failed to delete chat');
     }
 }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const konamiCode = [
+      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+      'b', 'a'
+    ];
+
+    let inputBuffer = [];
+
+    const k0nami = () => {
+      document.body.classList.add('inverted-colors');
+
+      const shakeInterval = setInterval(() => {
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 300);
+      }, 400);
+
+      // Stop shaking on reload (no persistent effect)
+      window.addEventListener('beforeunload', () => {
+        clearInterval(shakeInterval);
+      });
+    };
+
+    document.addEventListener('keydown', (e) => {
+      inputBuffer.push(e.key);
+      if (inputBuffer.length > konamiCode.length) {
+        inputBuffer.shift();
+      }
+
+      if (konamiCode.every((key, i) => inputBuffer[i] === key)) {
+        k0nami();
+      }
+    });
+  });
