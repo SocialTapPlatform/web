@@ -544,58 +544,49 @@ async function deleteChat(chatId) {
 }
 
  document.addEventListener('DOMContentLoaded', () => {
-  const keys = [];
-  const konamiCode = [38,38,40,40,37,39,37,39,66,65]; // up, up, down, down, left, right, left, right, B, A
+  const konamiCode = [38,38,40,40,37,39,37,39,66,65];
+  let konamiIndex = 0;
+
+  const popup = document.getElementById('epilepsyWarning');
+  const countdownSpan = document.getElementById('countdown');
+  const cancelBtn = document.getElementById('cancelEffectBtn');
+  
+  let countdown = 4;
   let countdownInterval;
-
-  function startEffects() {
-    document.body.classList.add('invert-colors');
-
-    // Shaking on every right arrow key press
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') {
-        document.body.style.transition = 'transform 0.05s';
-        document.body.style.transform = 'translateX(10px)';
-        setTimeout(() => {
-          document.body.style.transform = 'translateX(-10px)';
-        }, 50);
-        setTimeout(() => {
-          document.body.style.transform = 'translateX(0)';
-        }, 100);
-      }
-    });
-  }
-
-  function showWarningPopup() {
-    const popup = document.getElementById('epilepsyWarning');
-    const button = document.getElementById('cancelEffectBtn');
-    const countdown = document.getElementById('countdown');
-    let timeLeft = 4;
-
-    popup.style.display = 'flex';
-
+  
+  function showPopup() {
+    popup.classList.add('show');
+    countdown = 4;
+    countdownSpan.textContent = countdown;
     countdownInterval = setInterval(() => {
-      timeLeft--;
-      countdown.textContent = timeLeft;
-      if (timeLeft <= 0) {
+      countdown--;
+      countdownSpan.textContent = countdown;
+      if (countdown <= 0) {
         clearInterval(countdownInterval);
-        popup.style.display = 'none';
-        startEffects();
+        popup.classList.remove('show');
+        // The shake and invert effects stay active until user cancels
       }
     }, 1000);
-
-    button.addEventListener('click', () => {
-      clearInterval(countdownInterval);
-      popup.style.display = 'none';
-      alert('Effect canceled.');
-    });
   }
 
-  document.addEventListener('keydown', (e) => {
-    keys.push(e.keyCode);
-    if (keys.toString().indexOf(konamiCode.toString()) >= 0) {
-      showWarningPopup();
-      keys.length = 0; // reset
+  cancelBtn.addEventListener('click', () => {
+    clearInterval(countdownInterval);
+    popup.classList.remove('show');
+    document.body.classList.remove('shake');
+    document.body.classList.remove('inverted');
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.keyCode === konamiCode[konamiIndex]) {
+      konamiIndex++;
+      if (konamiIndex === konamiCode.length) {
+        konamiIndex = 0;
+        showPopup();
+        document.body.classList.add('shake');
+        document.body.classList.add('inverted');
+      }
+    } else {
+      konamiIndex = 0;
     }
   });
 });
