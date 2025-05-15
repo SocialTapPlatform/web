@@ -543,50 +543,37 @@ async function deleteChat(chatId) {
     }
 }
 
- document.addEventListener('DOMContentLoaded', () => {
-  const konamiCode = [38,38,40,40,37,39,37,39,66,65];
-  let konamiIndex = 0;
+  document.addEventListener('DOMContentLoaded', () => {
+    const konamiCode = [
+      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+      'b', 'a'
+    ];
 
-  const popup = document.getElementById('epilepsyWarning');
-  const countdownSpan = document.getElementById('countdown');
-  const cancelBtn = document.getElementById('cancelEffectBtn');
-  
-  let countdown = 4;
-  let countdownInterval;
-  
-  function showPopup() {
-    popup.classList.add('show');
-    countdown = 4;
-    countdownSpan.textContent = countdown;
-    countdownInterval = setInterval(() => {
-      countdown--;
-      countdownSpan.textContent = countdown;
-      if (countdown <= 0) {
-        clearInterval(countdownInterval);
-        popup.classList.remove('show');
-        // The shake and invert effects stay active until user cancels
-      }
-    }, 1000);
-  }
+    let inputBuffer = [];
 
-  cancelBtn.addEventListener('click', () => {
-    clearInterval(countdownInterval);
-    popup.classList.remove('show');
-    document.body.classList.remove('shake');
-    document.body.classList.remove('inverted');
-  });
+    const k0nami = () => {
+      document.body.classList.add('inverted-colors');
 
-  window.addEventListener('keydown', (e) => {
-    if (e.keyCode === konamiCode[konamiIndex]) {
-      konamiIndex++;
-      if (konamiIndex === konamiCode.length) {
-        konamiIndex = 0;
-        showPopup();
+      const shakeInterval = setInterval(() => {
         document.body.classList.add('shake');
-        document.body.classList.add('inverted');
+        setTimeout(() => document.body.classList.remove('shake'), 300);
+      }, 400);
+
+      // Stop shaking on reload (no persistent effect)
+      window.addEventListener('beforeunload', () => {
+        clearInterval(shakeInterval);
+      });
+    };
+
+    document.addEventListener('keydown', (e) => {
+      inputBuffer.push(e.key);
+      if (inputBuffer.length > konamiCode.length) {
+        inputBuffer.shift();
       }
-    } else {
-      konamiIndex = 0;
-    }
+
+      if (konamiCode.every((key, i) => inputBuffer[i] === key)) {
+        k0nami();
+      }
+    });
   });
-});
