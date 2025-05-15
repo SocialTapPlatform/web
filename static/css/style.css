@@ -277,6 +277,3 @@ footer a {
   animation: shake 0.3s;
 }
 
-#epilepsyWarning.show {
-  display: flex !important;
-}
