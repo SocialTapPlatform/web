@@ -543,6 +543,7 @@ async function deleteChat(chatId) {
     }
 }
 
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const konamiCode = [
       'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
@@ -560,9 +561,43 @@ async function deleteChat(chatId) {
         setTimeout(() => document.body.classList.remove('shake'), 300);
       }, 400);
 
-      // Stop shaking on reload (no persistent effect)
       window.addEventListener('beforeunload', () => {
         clearInterval(shakeInterval);
+      });
+    };
+
+    const showConfirmation = () => {
+      const popup = document.createElement('div');
+      popup.style.position = 'fixed';
+      popup.style.top = '0';
+      popup.style.left = '0';
+      popup.style.width = '100%';
+      popup.style.height = '100%';
+      popup.style.background = 'rgba(0,0,0,0.8)';
+      popup.style.color = 'white';
+      popup.style.display = 'flex';
+      popup.style.alignItems = 'center';
+      popup.style.justifyContent = 'center';
+      popup.style.zIndex = '9999';
+
+      const box = document.createElement('div');
+      box.style.background = '#222';
+      box.style.padding = '2rem';
+      box.style.borderRadius = '1rem';
+      box.style.textAlign = 'center';
+
+      box.innerHTML = `
+        <p style="margin-bottom: 1rem;">Warning<br>
+        Continue only if you are not sensitive to motion or flashing lights. If you would like to cancel, please restart your client.</p>
+        <button id="confirmKonami" style="padding: 0.5rem 1rem; font-size: 1rem;">Continue</button>
+      `;
+
+      popup.appendChild(box);
+      document.body.appendChild(popup);
+
+      document.getElementById('confirmKonami').addEventListener('click', () => {
+        popup.remove();
+        k0nami();
       });
     };
 
@@ -573,7 +608,8 @@ async function deleteChat(chatId) {
       }
 
       if (konamiCode.every((key, i) => inputBuffer[i] === key)) {
-        k0nami();
+        showConfirmation();
       }
     });
   });
+</script>
