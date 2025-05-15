@@ -543,7 +543,7 @@ async function deleteChat(chatId) {
     }
 }
 
-<script>
+
   document.addEventListener('DOMContentLoaded', () => {
     const konamiCode = [
       'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
@@ -612,4 +612,4 @@ async function deleteChat(chatId) {
       }
     });
   });
-</script>
+
