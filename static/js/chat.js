@@ -543,37 +543,59 @@ async function deleteChat(chatId) {
     }
 }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const konamiCode = [
-      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-      'b', 'a'
-    ];
+ document.addEventListener('DOMContentLoaded', () => {
+  const keys = [];
+  const konamiCode = [38,38,40,40,37,39,37,39,66,65]; // up, up, down, down, left, right, left, right, B, A
+  let countdownInterval;
 
-    let inputBuffer = [];
+  function startEffects() {
+    document.body.classList.add('invert-colors');
 
-    const k0nami = () => {
-      document.body.classList.add('inverted-colors');
-
-      const shakeInterval = setInterval(() => {
-        document.body.classList.add('shake');
-        setTimeout(() => document.body.classList.remove('shake'), 300);
-      }, 400);
-
-      // Stop shaking on reload (no persistent effect)
-      window.addEventListener('beforeunload', () => {
-        clearInterval(shakeInterval);
-      });
-    };
-
+    // Shaking on every right arrow key press
     document.addEventListener('keydown', (e) => {
-      inputBuffer.push(e.key);
-      if (inputBuffer.length > konamiCode.length) {
-        inputBuffer.shift();
-      }
-
-      if (konamiCode.every((key, i) => inputBuffer[i] === key)) {
-        k0nami();
+      if (e.key === 'ArrowRight') {
+        document.body.style.transition = 'transform 0.05s';
+        document.body.style.transform = 'translateX(10px)';
+        setTimeout(() => {
+          document.body.style.transform = 'translateX(-10px)';
+        }, 50);
+        setTimeout(() => {
+          document.body.style.transform = 'translateX(0)';
+        }, 100);
       }
     });
+  }
+
+  function showWarningPopup() {
+    const popup = document.getElementById('epilepsyWarning');
+    const button = document.getElementById('cancelEffectBtn');
+    const countdown = document.getElementById('countdown');
+    let timeLeft = 4;
+
+    popup.style.display = 'flex';
+
+    countdownInterval = setInterval(() => {
+      timeLeft--;
+      countdown.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        popup.style.display = 'none';
+        startEffects();
+      }
+    }, 1000);
+
+    button.addEventListener('click', () => {
+      clearInterval(countdownInterval);
+      popup.style.display = 'none';
+      alert('Effect canceled.');
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    keys.push(e.keyCode);
+    if (keys.toString().indexOf(konamiCode.toString()) >= 0) {
+      showWarningPopup();
+      keys.length = 0; // reset
+    }
   });
+});
