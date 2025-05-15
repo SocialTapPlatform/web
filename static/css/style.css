@@ -250,3 +250,6 @@ footer a {
 .pop-in {
   animation: popIn 0.13s ease-out;
 }
+.inverted {
+  filter: invert(100%) hue-rotate(180deg);
+}
