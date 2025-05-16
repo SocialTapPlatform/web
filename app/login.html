@@ -51,7 +51,10 @@
                         </form>
                         
                         <div class="text-center my-3">
-              
+              <a href="{{ url_for('google_auth.login') }}" class="btn btn-outline-primary w-100">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo" style="height: 18px; margin-right: 8px;">
+                                Sign in with Google
+                            </a>
                         <hr>
                         <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
                     </div>
