@@ -62,6 +62,25 @@
             </div>
         </div>
     </div>
+        <script>
+(function() {
+  const isAppleDevice = /Mac|iPhone|iPad/.test(navigator.userAgent);
+  const url = new URL(window.location.href);
+  const hasLiquidGlass = url.searchParams.has("liquidglass");
+
+ 
+  if (isAppleDevice && !hasLiquidGlass) {
+    url.searchParams.set("liquidglass", "");
+    window.location.replace(url.toString());
+  }
+
+  // If liquidglass param is present, apply the class
+  if (hasLiquidGlass) {
+    document.body.classList.add("liquid-glass");
+  }
+})();
+</script>
+
         <!-- Footer -->
     <footer class="py-3 mt-4">
         <div class="container text-center">
