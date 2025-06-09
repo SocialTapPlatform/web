@@ -277,3 +277,22 @@ footer a {
   animation: shake 0.3s;
 }
 
+body.liquid-glass .card,
+body.liquid-glass .modal-content,
+body.liquid-glass .navbar,
+body.liquid-glass .dropdown-menu {
+  backdrop-filter: blur(24px) saturate(180%);
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.liquid-glass .card {
+    background-color: rgba(20, 20, 20, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
