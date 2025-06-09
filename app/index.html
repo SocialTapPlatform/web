@@ -241,24 +241,25 @@ document.getElementById('createGroupChatBtn').addEventListener('click', () => {
             <p class="text-muted small mb-0">&copy; 2025 SocialTap. All rights reserved, protected by the </p><a href="https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt" class="text-decoration-none text-muted">Mozilla Public License 2</a>
         </div>
     </div>
-        <script>
+       <script>
 (function() {
   const isAppleDevice = /Mac|iPhone|iPad/.test(navigator.userAgent);
   const url = new URL(window.location.href);
-  const hasLiquidGlass = url.searchParams.has("liquidglass");
+  const hasLiquidGlass = url.searchParams.get("liquidglass") === "true";
 
- 
-  if (isAppleDevice && !hasLiquidGlass) {
-    url.searchParams.set("liquidglass", "");
+  // Redirect only once to add ?liquidglass=true
+  if (isAppleDevice && !url.searchParams.has("liquidglass")) {
+    url.searchParams.set("liquidglass", "true");
     window.location.replace(url.toString());
   }
 
-  // If liquidglass param is present, apply the class
+  // Activate Liquid Glass if ?liquidglass=true
   if (hasLiquidGlass) {
     document.body.classList.add("liquid-glass");
   }
 })();
 </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
  <script>
