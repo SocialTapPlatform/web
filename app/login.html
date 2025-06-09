@@ -62,24 +62,25 @@
             </div>
         </div>
     </div>
-        <script>
+<script>
 (function() {
   const isAppleDevice = /Mac|iPhone|iPad/.test(navigator.userAgent);
   const url = new URL(window.location.href);
-  const hasLiquidGlass = url.searchParams.has("liquidglass");
+  const hasLiquidGlass = url.searchParams.get("liquidglass") === "true";
 
- 
-  if (isAppleDevice && !hasLiquidGlass) {
-    url.searchParams.set("liquidglass", "");
+  // Redirect only once to add ?liquidglass=true
+  if (isAppleDevice && !url.searchParams.has("liquidglass")) {
+    url.searchParams.set("liquidglass", "true");
     window.location.replace(url.toString());
   }
 
-  // If liquidglass param is present, apply the class
+  // Activate Liquid Glass if ?liquidglass=true
   if (hasLiquidGlass) {
     document.body.classList.add("liquid-glass");
   }
 })();
 </script>
+
 
         <!-- Footer -->
     <footer class="py-3 mt-4">
