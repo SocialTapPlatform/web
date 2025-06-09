@@ -277,54 +277,39 @@ footer a {
   animation: shake 0.3s;
 }
 
-body.liquid-glass .card,
-body.liquid-glass .modal-content,
-body.liquid-glass .navbar,
-body.liquid-glass .dropdown-menu {
-  backdrop-filter: blur(24px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+html body.liquid-glass .chat-card,
+html body.liquid-glass .sidebar-card,
+html body.liquid-glass .card,
+html body.liquid-glass .card-body,
+html body.liquid-glass .modal-content,
+html body.liquid-glass .navbar,
+html body.liquid-glass .dropdown-menu {
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  color: white !important;
+  transition: all 0.3s ease !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  body.liquid-glass .card {
-    background-color: rgba(20, 20, 20, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-}
-/* Liquid Glass Mode Enhancements */
-body.liquid-glass .chat-card,
-body.liquid-glass .sidebar-card,
-body.liquid-glass .card,
-body.liquid-glass .card-body,
-body.liquid-glass .modal-content,
-body.liquid-glass .navbar,
-body.liquid-glass .dropdown-menu {
-  backdrop-filter: blur(24px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  color: white;
-}
-
-body.liquid-glass .form-control {
+html body.liquid-glass .form-control {
   background-color: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: white !important;
 }
 
-body.liquid-glass footer {
+html body.liquid-glass footer {
   background-color: rgba(0, 0, 0, 0.3) !important;
   color: white !important;
 }
 
-body.liquid-glass footer a {
+html body.liquid-glass footer a {
   color: #0071e3 !important;
+}
+
+html body.liquid-glass .chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
 
