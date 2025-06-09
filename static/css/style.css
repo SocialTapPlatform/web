@@ -295,4 +295,40 @@ body.liquid-glass .dropdown-menu {
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 }
+/* Liquid Glass Mode Enhancements */
+body.liquid-glass .chat-card,
+body.liquid-glass .sidebar-card,
+body.liquid-glass .card,
+body.liquid-glass .card-body,
+body.liquid-glass .modal-content,
+body.liquid-glass .navbar,
+body.liquid-glass .dropdown-menu {
+  backdrop-filter: blur(24px) saturate(180%);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+body.liquid-glass .form-control {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+body.liquid-glass footer {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: white !important;
+}
+
+body.liquid-glass footer a {
+  color: #0071e3 !important;
+}
+
+
+body.liquid-glass .chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
 
